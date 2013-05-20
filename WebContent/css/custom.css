@@ -1,0 +1,62 @@
+/* 
+
+CUSTOM STYLESHEET
+
+Add your custom styles here instead of style.css so it is easier to 
+update the template. Simply copy an existing style from style.css to 
+this file, and modify it to your liking. 
+
+*/
+
+.W_100{
+	width:100%;
+}
+
+.W_98{
+	width:98%;
+}
+
+.center{
+	text-align:center;
+}
+
+.red_td tr td{
+	color:red;
+}
+.green_td tr td{
+	color:green;;
+}
+
+/* 弹出模态层 */
+
+.model_div
+{ 
+	position: absolute; 
+	width: 700px; 
+	height: 550px; 
+	font-size: 12px; 
+	background: #fff; 
+	border: 0px solid #000; 
+	z-index: 10001; 
+	display: none; 
+	border:#aaa solid 5px;
+} 
+
+.model_div .close_btn{
+	width:40px;
+	height:20px;
+	background:#aaa;
+	float:right;
+	text-align:center;
+	cursor:pointer;
+	color:white;
+}
+.model_div .close_btn:hover{
+	background:#999;
+}
+
+
+.header{
+	
+	
+}

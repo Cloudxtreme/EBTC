@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.menu.mapper.MenuMapper">
+  <!--连表查询结果集和子结果集-->
+  <resultMap id="menuJoinResultMap" type="Menu">
+    <id property="id" column="m_id"/>
+    <result property="parentId" column="m_parent_id"/>
+    <result property="name" column="m_name"/>
+    <result property="uri" column="m_uri"/>
+    <result property="seq" column="m_seq"/>
+    <result property="type" column="m_type"/>
+    <collection property="subMenus" column="{m_id}" ofType="Menu" resultMap="menuSubResultMap"/>
+  </resultMap>
+  <resultMap id="menuSubResultMap" type="Menu">
+    <id property="id" column="m_1_id"/>
+    <result property="parentId" column="m_1_parent_id"/>
+    <result property="name" column="m_1_name"/>
+    <result property="uri" column="m_1_uri"/>
+    <result property="seq" column="m_1_seq"/>
+    <result property="type" column="m_1_type"/>
+  </resultMap>
+  <!--连表查询动态sql语句-->
+  <select id="joinSelectMenu" parameterType="Menu" resultMap="menuJoinResultMap"><![CDATA[select m.id as m_id,m.parent_id as m_parent_id,m.name as m_name,m.uri as m_uri,m.seq as m_seq,m.type as m_type,m_1.id as m_1_id,m_1.parent_id as m_1_parent_id,m_1.name as m_1_name,m_1.uri as m_1_uri,m_1.seq as m_1_seq,m_1.type as m_1_type from menu m left join menu m_1 on m.id = m_1.parent_id ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and m.id = #{id} ]]></if>
+      <if test="parentId != null"><![CDATA[and m.parent_id = #{parentId} ]]></if>
+      <if test="name != null"><![CDATA[and m.name = #{name} ]]></if>
+      <if test="uri != null"><![CDATA[and m.uri = #{uri} ]]></if>
+      <if test="seq != null"><![CDATA[and m.seq = #{seq} ]]></if>
+      <if test="type != null"><![CDATA[and m.type = #{type} ]]></if>
+    </trim>
+  </select>
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="menuNestedResultMap" type="Menu">
+    <id property="id" column="id"/>
+    <result property="parentId" column="parent_id"/>
+    <result property="name" column="name"/>
+    <result property="uri" column="uri"/>
+    <result property="seq" column="seq"/>
+    <result property="type" column="type"/>
+    <collection property="subMenus" column="{id=id}" ofType="Menu" select="menuSubSelect"/>
+  </resultMap>
+  <select id="menuSubSelect" parameterType="HashMap" resultMap="com.ebtc.menu.mapper.MenuMapper.menuNestedResultMap"><![CDATA[select m.id,m.parent_id,m.name,m.uri,m.seq,m.type from menu m where m.parent_id = #{id}]]></select>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectMenu" parameterType="Menu" resultMap="menuNestedResultMap"><![CDATA[select m.id,m.parent_id,m.name,m.uri,m.seq,m.type from menu m ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and m.id = #{id} ]]></if>
+      <if test="parentId != null"><![CDATA[and m.parent_id = #{parentId} ]]></if>
+      <if test="name != null"><![CDATA[and m.name = #{name} ]]></if>
+      <if test="uri != null"><![CDATA[and m.uri = #{uri} ]]></if>
+      <if test="seq != null"><![CDATA[and m.seq = #{seq} ]]></if>
+      <if test="type != null"><![CDATA[and m.type = #{type} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertMenu" parameterType="Menu" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into menu ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="parentId != null"><![CDATA[,parent_id]]></if>
+      <if test="name != null"><![CDATA[,name]]></if>
+      <if test="uri != null"><![CDATA[,uri]]></if>
+      <if test="seq != null"><![CDATA[,seq]]></if>
+      <if test="type != null"><![CDATA[,type]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="parentId != null"><![CDATA[,#{parentId}]]></if>
+      <if test="name != null"><![CDATA[,#{name}]]></if>
+      <if test="uri != null"><![CDATA[,#{uri}]]></if>
+      <if test="seq != null"><![CDATA[,#{seq}]]></if>
+      <if test="type != null"><![CDATA[,#{type}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateMenu" parameterType="Menu" flushCache="true"><![CDATA[update menu ]]>
+    <set>
+      <if test="parentId != null"><![CDATA[parent_id=#{parentId},]]></if>
+      <if test="name != null"><![CDATA[name=#{name},]]></if>
+      <if test="uri != null"><![CDATA[uri=#{uri},]]></if>
+      <if test="seq != null"><![CDATA[seq=#{seq},]]></if>
+      <if test="type != null"><![CDATA[type=#{type},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteMenu" parameterType="Menu" flushCache="true"><![CDATA[delete from menu ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="parentId != null"><![CDATA[and parent_id = #{parentId}]]></if>
+          <if test="name != null"><![CDATA[and name = #{name}]]></if>
+          <if test="uri != null"><![CDATA[and uri = #{uri}]]></if>
+          <if test="seq != null"><![CDATA[and seq = #{seq}]]></if>
+          <if test="type != null"><![CDATA[and type = #{type}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+</mapper>

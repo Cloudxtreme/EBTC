@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+      http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"  default-autowire="byName">
+      
+      	<!-- 自动扫描 dao层和service层-->
+      	<context:component-scan base-package="com.ebtc.*.dao"></context:component-scan>
+      	<context:component-scan base-package="com.ebtc.*.service"></context:component-scan>
+      
+      	<!-- 引入配置文件 -->
+      	<context:property-placeholder location="classpath:jdbc.properties"/>
+      
+      	<!-- 数据源 -->
+      	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	      	<property name="driverClassName" value="${driver}"></property>
+	      	<property name="url" value="${url}"></property>
+	      	<property name="username" value="${username}"></property>
+	      	<property name="password" value="${password}"></property>
+      	</bean>
+      
+     	<!-- myBatis sqlSessionFactory -->
+      	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        	<property name="dataSource" ref="dataSource" />
+        	<property name="configLocation" value="classpath:Configuration.xml"></property>
+      	</bean>
+      	<bean id="sqlSession"     class="org.mybatis.spring.SqlSessionTemplate"> 
+      		<constructor-arg index="0" ref="sqlSessionFactory" /> 
+		</bean>
+      
+      	<!-- 强制使用CGLIB代理  -->
+<!--       <aop:aspectj-autoproxy proxy-target-class="true"/> -->
+<!-- 		使用cglib代理 -->
+      	<bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
+      
+      	<!-- 事务管理器 DataSourceTransactionManager -->
+      	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"></property>
+      	</bean>
+      
+      	<!-- 启动spring注解功能 -->
+      	<tx:annotation-driven transaction-manager="txManager"/>
+      	
+      	<!--  配置事务传播特性 -->
+      	<tx:advice id="txAdvice" transaction-manager="txManager">
+        	<tx:attributes>
+	            <tx:method name="select*" read-only="true" propagation="SUPPORTS" isolation="REPEATABLE_READ" />
+	            <tx:method name="find*" read-only="true" propagation="SUPPORTS" isolation="REPEATABLE_READ" />
+	            <tx:method name="query*" read-only="true" propagation="SUPPORTS" isolation="REPEATABLE_READ" />
+	            
+	            <tx:method name="insert*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="add*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="new*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="save*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="create*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            
+	            <tx:method name="update*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="modify*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            
+	            <tx:method name="delete*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            <tx:method name="remove*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+        	</tx:attributes>
+      	</tx:advice>
+      
+      	<!--  配置参与事务的类 -->
+      	<aop:config>
+			<aop:pointcut id="allServiceMethod" expression="execution(* com.ebtc..*Service.*(..))"/>
+			<aop:advisor pointcut-ref="allServiceMethod" advice-ref="txAdvice" />
+	  	</aop:config>
+      
+</beans>

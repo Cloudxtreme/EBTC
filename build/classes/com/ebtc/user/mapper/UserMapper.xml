@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.user.mapper.UserMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="userNestedResultMap" type="User">
+    <id property="id" column="id"/>
+    <result property="username" column="username"/>
+    <result property="password" column="password"/>
+    <result property="paymentCode" column="payment_code"/>
+    <result property="nickname" column="nickname"/>
+    <result property="mobile" column="mobile"/>
+    <result property="email" column="email"/>
+    <result property="state" column="state"/>
+    <result property="type" column="type"/>
+    <result property="createTime" column="create_time"/>
+    <result property="lastLoginTime" column="last_login_time"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectUser" parameterType="User" resultMap="userNestedResultMap"><![CDATA[select u.id,u.username,u.password,u.payment_code,u.nickname,u.mobile,u.email,u.state,u.type,u.create_time,u.last_login_time from user u ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and u.id = #{id} ]]></if>
+      <if test="username != null"><![CDATA[and u.username = #{username} ]]></if>
+      <if test="password != null"><![CDATA[and u.password = #{password} ]]></if>
+      <if test="paymentCode != null"><![CDATA[and u.payment_code = #{paymentCode} ]]></if>
+      <if test="nickname != null"><![CDATA[and u.nickname = #{nickname} ]]></if>
+      <if test="mobile != null"><![CDATA[and u.mobile = #{mobile} ]]></if>
+      <if test="email != null"><![CDATA[and u.email = #{email} ]]></if>
+      <if test="state != null"><![CDATA[and u.state = #{state} ]]></if>
+      <if test="type != null"><![CDATA[and u.type = #{type} ]]></if>
+      <if test="createTime != null"><![CDATA[and u.create_time = #{createTime} ]]></if>
+      <if test="lastLoginTime != null"><![CDATA[and u.last_login_time = #{lastLoginTime} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertUser" parameterType="User" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into user ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="username != null"><![CDATA[,username]]></if>
+      <if test="password != null"><![CDATA[,password]]></if>
+      <if test="paymentCode != null"><![CDATA[,payment_code]]></if>
+      <if test="nickname != null"><![CDATA[,nickname]]></if>
+      <if test="mobile != null"><![CDATA[,mobile]]></if>
+      <if test="email != null"><![CDATA[,email]]></if>
+      <if test="state != null"><![CDATA[,state]]></if>
+      <if test="type != null"><![CDATA[,type]]></if>
+      <if test="createTime != null"><![CDATA[,create_time]]></if>
+      <if test="lastLoginTime != null"><![CDATA[,last_login_time]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="username != null"><![CDATA[,#{username}]]></if>
+      <if test="password != null"><![CDATA[,#{password}]]></if>
+      <if test="paymentCode != null"><![CDATA[,#{paymentCode}]]></if>
+      <if test="nickname != null"><![CDATA[,#{nickname}]]></if>
+      <if test="mobile != null"><![CDATA[,#{mobile}]]></if>
+      <if test="email != null"><![CDATA[,#{email}]]></if>
+      <if test="state != null"><![CDATA[,#{state}]]></if>
+      <if test="type != null"><![CDATA[,#{type}]]></if>
+      <if test="createTime != null"><![CDATA[,#{createTime}]]></if>
+      <if test="lastLoginTime != null"><![CDATA[,#{lastLoginTime}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateUser" parameterType="User" flushCache="true"><![CDATA[update user ]]>
+    <set>
+      <if test="username != null"><![CDATA[username=#{username},]]></if>
+      <if test="password != null"><![CDATA[password=#{password},]]></if>
+      <if test="paymentCode != null"><![CDATA[payment_code=#{paymentCode},]]></if>
+      <if test="nickname != null"><![CDATA[nickname=#{nickname},]]></if>
+      <if test="mobile != null"><![CDATA[mobile=#{mobile},]]></if>
+      <if test="email != null"><![CDATA[email=#{email},]]></if>
+      <if test="state != null"><![CDATA[state=#{state},]]></if>
+      <if test="type != null"><![CDATA[type=#{type},]]></if>
+      <if test="createTime != null"><![CDATA[create_time=#{createTime},]]></if>
+      <if test="lastLoginTime != null"><![CDATA[last_login_time=#{lastLoginTime},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteUser" parameterType="User" flushCache="true"><![CDATA[delete from user ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="username != null"><![CDATA[and username = #{username}]]></if>
+          <if test="password != null"><![CDATA[and password = #{password}]]></if>
+          <if test="paymentCode != null"><![CDATA[and payment_code = #{paymentCode}]]></if>
+          <if test="nickname != null"><![CDATA[and nickname = #{nickname}]]></if>
+          <if test="mobile != null"><![CDATA[and mobile = #{mobile}]]></if>
+          <if test="email != null"><![CDATA[and email = #{email}]]></if>
+          <if test="state != null"><![CDATA[and state = #{state}]]></if>
+          <if test="type != null"><![CDATA[and type = #{type}]]></if>
+          <if test="createTime != null"><![CDATA[and create_time = #{createTime}]]></if>
+          <if test="lastLoginTime != null"><![CDATA[and last_login_time = #{lastLoginTime}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--数量查询动态sql语句-->
+  <select id="countUser" parameterType="User" resultType="int"><![CDATA[select count(*) from user u ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and u.id = #{id} ]]></if>
+      <if test="username != null"><![CDATA[and u.username = #{username} ]]></if>
+      <if test="password != null"><![CDATA[and u.password = #{password} ]]></if>
+      <if test="paymentCode != null"><![CDATA[and u.payment_code = #{paymentCode} ]]></if>
+      <if test="nickname != null"><![CDATA[and u.nickname = #{nickname} ]]></if>
+      <if test="mobile != null"><![CDATA[and u.mobile = #{mobile} ]]></if>
+      <if test="email != null"><![CDATA[and u.email = #{email} ]]></if>
+      <if test="state != null"><![CDATA[and u.state = #{state} ]]></if>
+      <if test="type != null"><![CDATA[and u.type = #{type} ]]></if>
+      <if test="createTime != null"><![CDATA[and u.create_time = #{createTime} ]]></if>
+      <if test="lastLoginTime != null"><![CDATA[and u.last_login_time = #{lastLoginTime} ]]></if>
+    </trim>
+  </select>
+  
+</mapper>
