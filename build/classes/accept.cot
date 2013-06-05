@@ -1,6 +1,7 @@
 # 井号开头是注释
 
 /index
+/main
 #用户注册登陆
 /user/login
 /user/register

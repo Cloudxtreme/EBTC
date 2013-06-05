@@ -7,17 +7,13 @@
 <script type="text/javascript" src="${ctx}/js/jquery.sparkline.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/flot/jquery.flot.selection.min.js"></script>
-<!-- JSON -->
-<script type="text/javascript" src="${ctx}/js/json/json2.min.js"></script>
-<!-- WS_OPERATIONS_COMMUNICATIONS -->
-<script type="text/javascript" src="${ctx}/js/ebtc/operations_communications.js"></script>
+
 <script type="text/javascript">
 	
 	
 	$(document).ready(function(){
 		
-		serviceRequest(["currentRate","transactionRecord"]);
-		
+		//限制输入框内容
 		$("#buyPrice").keypress(function(event) {  
             var keyCode = event.keyCode || event.which;
             if (keyCode == 8 || keyCode == 46 || (keyCode >= 48 && keyCode <=57)){

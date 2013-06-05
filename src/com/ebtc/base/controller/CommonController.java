@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.ebtc.account.pojo.BtcAccount;
 import com.ebtc.account.pojo.CnyAccount;
@@ -39,17 +40,22 @@ public class CommonController extends BaseController {
 	@Autowired
 	private OrderService orderService;
 	
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/main")
+	public String main(){
+		return "main";
+	}
+	
+	@RequestMapping(value="/index",method=RequestMethod.POST)
 	public String dashboard(){
 		String uri = request.getRequestURI().toString();
 		return "index";
 	}
-	@RequestMapping("/trade")
+	@RequestMapping(value="/trade",method=RequestMethod.POST)
 	public String trade(){
 		return "trade/trade";
 	}
 	
-	@RequestMapping("/myAcc")
+	@RequestMapping(value="/myAcc",method=RequestMethod.POST)
 	public String myAcc() throws Exception{
 		try{
 		User user = (User) session.getAttribute(Constants.LOGIN_USER);

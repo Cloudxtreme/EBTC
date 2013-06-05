@@ -15,16 +15,19 @@ import org.apache.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ebtc.base.cache.Memcached;
 import com.ebtc.common.constants.Constants;
 import com.ebtc.operation.bean.Action;
 import com.ebtc.operation.bean.Message;
 import com.ebtc.operation.bean.TradeOrderInfo;
-import com.ebtc.order.pojo.Order;
+import com.ebtc.user.pojo.User;
+import com.ebtc.user.service.UserService;
 
 public class WSServer extends WebSocketServer {
 
+	
 	private Logger log = Logger.getLogger(WSServer.class);
 	
 	//Memcached缓存
@@ -35,6 +38,8 @@ public class WSServer extends WebSocketServer {
 	//交易记录的连接
 	private List<WebSocket> transactionRecordConnections;
 	
+	@Autowired
+	private UserService userService;
 	
 	public WSServer(int port) {
 		this(new InetSocketAddress("127.0.0.1",port));
@@ -105,9 +110,15 @@ public class WSServer extends WebSocketServer {
 		JSONObject action = json.getJSONObject("action");
 		if(action != null){
 			String command = action.getString("command");
-			//命令是服务service
-			if(command != null && command.equals("service")){
-				doService(conn,action);
+			if(command != null){
+				//命令是服务service
+				if(command.equals("service")){
+					doService(conn,action);
+				}else if(command.equals("login")){
+					User user = new User();
+					
+//					userService.login()；
+				}
 			}
 		}
 	}

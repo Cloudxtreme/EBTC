@@ -52,7 +52,15 @@
 <script src="${ctx}/js/IE8.js"></script>
 <![endif]-->
 	<script type="text/javascript"> 
-	
+		
+		$(function(){
+			parent.autoWH(document.body.scrollWidth,document.body.scrollHeight);
+		});
+		
+		function go_to(uri){
+			
+		}
+		
 		function openLoginBox(){
 			$("#login_div").OpenDiv(); 
 		}
@@ -64,10 +72,14 @@
 		} 
 		
 		function login(){
-			var loginForm = $('#login_form');
-			loginForm.attr('action','${ctx }/user/login');
-			loginForm.attr('method','post');
-			loginForm.submit();
+// 			var loginForm = $('#login_form');
+// 			loginForm.attr('action','${ctx }/user/login');
+// 			loginForm.attr('method','post');
+// 			loginForm.submit();
+			var username = $("input[name='username']")[0].value;
+			var password = $("input[name='password']")[0].value;
+			
+			parent.login(username,password);
 		}
 		
 		function closeRegister(tar) {
@@ -106,20 +118,18 @@
 				<div>
 					<c:choose>
 						<c:when test="${empty sessionScope.login_user }">
-							<form id="login_form" action="">
-								<fmt:message key="username"/><input style="margin:5px;width:100px" name="username" value="${sessionScope.username }"/>
-								<c:remove var="username" scope="session" />
-								<fmt:message key="password"/><input style="margin:5px;width:100px" name="password" type="password" /><br>
-								<c:if test="${not empty sessionScope.error }">
-									<small style="color:red;"><fmt:message key="${error }" /></br></small>
-									<c:remove  var="error"  scope="session"  />
-								</c:if>
-								<a href="#"><fmt:message key="forgotPassword"/></a>
-								<span>|</span>
-								<a href="#"><fmt:message key="forgotUsername"/></a></br>
-								<a style="padding:4px;margin:5px" class="btn btn-blue" onclick="login()"><fmt:message key="login"/></a>
-								<a style="padding:4px;margin:5px" class="btn btn-green" onclick="openRegister()"><fmt:message key="signUp"/></a>
-							</form>
+							<fmt:message key="username"/><input style="margin:5px;width:100px" name="username" value="${sessionScope.username }"/>
+							<c:remove var="username" scope="session" />
+							<fmt:message key="password"/><input style="margin:5px;width:100px" name="password" type="password" /><br>
+<%-- 							<c:if test="${not empty sessionScope.error }"> --%>
+<%-- 								<small style="color:red;"><fmt:message key="${error }" /></br></small> --%>
+<%-- 								<c:remove  var="error"  scope="session"  /> --%>
+<%-- 							</c:if> --%>
+							<a href="#"><fmt:message key="forgotPassword"/></a>
+							<span>|</span>
+							<a href="#"><fmt:message key="forgotUsername"/></a></br>
+							<a style="padding:4px;margin:5px" class="btn btn-blue" onclick="login()"><fmt:message key="login"/></a>
+							<a style="padding:4px;margin:5px" class="btn btn-green" onclick="openRegister()"><fmt:message key="signUp"/></a>
 						</c:when>
 						<c:otherwise>
 							欢迎回来! <b id="login_user">${sessionScope.login_user.nickname }</b>
@@ -143,12 +153,12 @@
 								<li>
 							</c:otherwise>
 						</c:choose>
-							<a href="${ctx }${menu.uri }"><fmt:message key="${menu.name }" /></a>
+							<a onclick="parent.go('${ctx }${menu.uri }')"><fmt:message key="${menu.name }" /></a>
 							<c:if test="${not empty menu.subMenus }">
 								<ul>
 									<c:forEach items="${ctx }${menu.subMenus }" var="subMenu">
 										<li>
-											<a href="${ctx }${subMenu.uri }"><fmt:message key="${subMenu.name }" /></a>
+											<a onclick="parent.go('${ctx }${subMenu.uri }')"><fmt:message key="${subMenu.name }" /></a>
 										</li>
 									</c:forEach>
 								</ul>
@@ -178,5 +188,4 @@
 	</header>
 	<!-- End of Header -->
 	<!-- End of Page title -->
-	<div id="currentRateData" style="display:none;"></div>
 	

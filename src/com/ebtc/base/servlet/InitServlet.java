@@ -159,8 +159,7 @@ public class InitServlet extends HttpServlet {
         application.setAttribute("sellHandlingFeeRate", sellHandlingFeeRate);
        
         //初始化WebSocketServer
-        int port = Integer.parseInt(PropertiesUtils.get("web_socket_server_port"));
-        WSServer webSocketServer = new WSServer(port);
+        WSServer webSocketServer = (WSServer) applicationContext.getBean("WSServer");
         webSocketServer.start();
         application.setAttribute("WSS", webSocketServer);
         
