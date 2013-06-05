@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;  
 import java.util.Properties;  
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 	  
 public class PropertiesUtils {
 
 	private static Properties pros = null;// Properties Object
 
+	private static Logger log = Logger.getLogger(PropertiesUtils.class);
+	
 	/**
 	 * Loading files to Properties object
 	 * 
@@ -25,7 +29,7 @@ public class PropertiesUtils {
 		try {
 			pros.load(in);// Load the file Properties to flow to the object
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.debug(e);
 		}
 	}
 

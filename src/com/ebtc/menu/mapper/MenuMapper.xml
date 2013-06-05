@@ -97,4 +97,15 @@
       </choose>
     </where>
   </delete>
+  <!--查询数量语句-->
+  <select id="countMenu" parameterType="Menu" resultType="int"><![CDATA[select count(*) from menu m ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and m.id = #{id} ]]></if>
+      <if test="parentId != null"><![CDATA[and m.parent_id = #{parentId} ]]></if>
+      <if test="name != null"><![CDATA[and m.name = #{name} ]]></if>
+      <if test="uri != null"><![CDATA[and m.uri = #{uri} ]]></if>
+      <if test="seq != null"><![CDATA[and m.seq = #{seq} ]]></if>
+      <if test="type != null"><![CDATA[and m.type = #{type} ]]></if>
+    </trim>
+  </select>
 </mapper>

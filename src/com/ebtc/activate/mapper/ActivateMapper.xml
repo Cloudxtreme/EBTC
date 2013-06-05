@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.activate.mapper.ActivateMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="activateNestedResultMap" type="Activate">
+    <id property="id" column="id"/>
+    <result property="value" column="value"/>
+    <result property="code" column="code"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectActivate" parameterType="Activate" resultMap="activateNestedResultMap"><![CDATA[select a.id,a.value,a.code from activate a ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and a.id = #{id} ]]></if>
+      <if test="value != null"><![CDATA[and a.value = #{value} ]]></if>
+      <if test="code != null"><![CDATA[and a.code = #{code} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertActivate" parameterType="Activate" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into activate ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="value != null"><![CDATA[,value]]></if>
+      <if test="code != null"><![CDATA[,code]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="value != null"><![CDATA[,#{value}]]></if>
+      <if test="code != null"><![CDATA[,#{code}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateActivate" parameterType="Activate" flushCache="true"><![CDATA[update activate ]]>
+    <set>
+      <if test="value != null"><![CDATA[value=#{value},]]></if>
+      <if test="code != null"><![CDATA[code=#{code},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteActivate" parameterType="Activate" flushCache="true"><![CDATA[delete from activate ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="value != null"><![CDATA[and value = #{value}]]></if>
+          <if test="code != null"><![CDATA[and code = #{code}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--查询数量语句-->
+  <select id="countActivate" parameterType="Activate" resultType="int"><![CDATA[select count(*) from activate a ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and a.id = #{id} ]]></if>
+      <if test="value != null"><![CDATA[and a.value = #{value} ]]></if>
+      <if test="code != null"><![CDATA[and a.code = #{code} ]]></if>
+    </trim>
+  </select>
+</mapper>

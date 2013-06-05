@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ebtc.order.mapper.QueryMyOrderList">
+  <!--嵌套查询动态sql语句-->
+  <select id="queryMyOrderList" parameterType="HashMap" resultMap="com.ebtc.order.mapper.OrderMapper.orderNestedResultMap">
+  	<![CDATA[select o.id,o.buyer_id,o.seller_id,o.price,o.quantity,o.type,o.state,o.currency_type,o.fee,o.fee_rate,o.create_time,o.create_user,o.done_time,o.remark from orders o ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and o.buyer_id = #{id} ]]></if>
+      <if test="id != null"><![CDATA[or o.seller_id = #{id} ]]></if>
+    </trim>
+  </select>
+</mapper>

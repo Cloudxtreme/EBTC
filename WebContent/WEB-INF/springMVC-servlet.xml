@@ -51,5 +51,24 @@
     		<bean class="com.ebtc.base.interceptor.ServletObjectInterceptor" ></bean>
     	</mvc:interceptor>
     </mvc:interceptors>
-        
+    
+<!--     I18N拦截器 -->
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+<!--     I18N解析器 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"></bean>
+
+<!--     URL映射器 -->
+    <bean id="defaultUrlMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+		<property name="interceptors" ref="localeChangeInterceptor"/>
+		<property name="order">
+			<value>1</value>
+		</property>
+	</bean>
+    
+    <!-- 资源文件绑定器 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="message-info"/>
+		<property name="useCodeAsDefaultMessage" value="true"/>
+	</bean>
+    
 </beans>

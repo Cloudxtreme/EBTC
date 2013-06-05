@@ -1,16 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="cos" uri="/constantsTag" %>  
 
 <%@include file="/WEB-INF/pages/common/headder.jsp" %>
 
 <script type="text/javascript">
-	$(document).ready(function(){
-		
-		/* setup navigation, content boxes, etc... */
-		Administry.setup();
-		
-	});
 </script>
 
 	<!-- Page content -->
@@ -22,31 +18,37 @@
 <!-- 					欢迎回来，账户信息，余额 -->
 					<div class="colgroup leading">
 						<div class="column width3 first">
-							<h3>欢迎回来, <a href="#">Admin</a>!</h3>
+							<h3><fmt:message key="welcomeBack"/>, <a href="#">${sessionScope.login_user.nickname }</a>!</h3>
 							<p>
-								&nbsp;&nbsp;&nbsp;&nbsp;您的比特币余额: <b>฿20 </b><br />
-								&nbsp;&nbsp;&nbsp;&nbsp;冻结比特币余额: <b>฿20 </b>
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="totalBtcBalance"/>: <b><fmt:formatNumber type="currency" pattern="฿#,###.#########" value="${requestScope.btcAccount.balance }"/></b><br />
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="usableBtcBalance"/>: <b><fmt:formatNumber type="currency" pattern="฿#,###.#########" value="${requestScope.btcAccount.balance - requestScope.btcAccount.freeze}"/></b><br />
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="freezeBtcBalance"/>: <b><fmt:formatNumber type="currency" pattern="฿#,###.#########" value="${requestScope.btcAccount.freeze }"/></b><br />
+							</p>
+							<p>
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="totalCnyBalance"/>: <b><fmt:formatNumber type="currency" pattern="￥#,###.##" value="${requestScope.cnyAccount.balance }"/></b><br />
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="usableCnyBalance"/>: <b><fmt:formatNumber type="currency" pattern="￥#,###.##" value="${requestScope.cnyAccount.balance - requestScope.cnyAccount.freeze}"/></b><br />
+								&nbsp;&nbsp;&nbsp;&nbsp;<fmt:message key="freezeCnyBalance"/>: <b><fmt:formatNumber type="currency" pattern="￥#,###.##" value="${requestScope.cnyAccount.freeze }"/></b><br />
 							</p>
 						</div>
 						<div class="column width3">
-							<h4>上次登陆时间</h4>
+							<h4><fmt:message key="lastLoginTime"/></h4>
 							<p>
-								Monday July 12th, 2010 at 11:32am from 127.0.0.1<br />
-								No error login attempts.
+								<fmt:formatDate  value="${sessionScope.login_user.lastLoginTime }" type="both" timeStyle="default" pattern="EEEE, MMMM d, yyyy HH:mm:ss"/>
+								<br />
 							</p>
 						</div>
 					</div>
 <!-- 					充值 提现-->
 					<div class="colgroup leading">
 						<div class="column width3 first">
-							<h3>充值</h3>
+							<h3><fmt:message key="pay"/></h3>
 							<p>
 								&nbsp;&nbsp;&nbsp;&nbsp;您的比特币余额: <b>฿20 </b><br />
 								&nbsp;&nbsp;&nbsp;&nbsp;冻结比特币余额: <b>฿20 </b>
 							</p>
 						</div>
 						<div class="column width3">
-							<h3>提现</h3>
+							<h3><fmt:message key="withdraw" /></h3>
 							<p>
 								Monday July 12th, 2010 at 11:32am from 127.0.0.1<br />
 								No error login attempts.
@@ -58,46 +60,54 @@
 						<div class="column width6 first">
 							<div class="content-box corners content-box">
 								<header>
-									<h3>我的委托单</h3>
+									<h3><fmt:message key="myOrders"/></h3>
 								</header>
 								<section class="W_98">
 									<table class="no-style full center">
 										<thead>
 											<tr>
-												<th>下单时间</th>
-												<th>交易类型</th>
-												<th>交易价格(CNY/BTC)</th>
-												<th>数量(BTC)</th>
-												<th>总额(CNY)</th>
-												<th>状态</th>
-												<th>操作</th>
+												<th><fmt:message key="orderTime"/></th>
+												<th><fmt:message key="tradeType"/></th>
+												<th><fmt:message key="price"/></th>
+												<th><fmt:message key="quantity"/></th>
+												<th><fmt:message key="totalAmount"/></th>
+												<th><fmt:message key="state"/></th>
+												<th><fmt:message key="operations"/></th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td>Data 1</td>
-												<td>Data 2</td>
-												<td>Data 3</td>
-												<td>Data 4</td>
-											</tr>
-											<tr>
-												<td>Data 1</td>
-												<td>Data 2</td>
-												<td>Data 3</td>
-												<td>Data 5</td>
-											</tr>
-											<tr>
-												<td>Data 1</td>
-												<td>Data 2</td>
-												<td>Data 3</td>
-												<td>Data 4</td>
-											</tr>
-											<tr>
-												<td>Data 1</td>
-												<td>Data 2</td>
-												<td>Data 3</td>
-												<td>Data 5</td>
-											</tr>
+											<c:choose>
+												<c:when test="${not empty requestScope.myOrderList }">
+													<c:forEach items="${requestScope.myOrderList }" var="order" varStatus="status">
+														<tr>
+															<td><fmt:formatDate value="${order.createTime }" type="both" timeStyle="default" /></td>
+															<td>
+																<c:choose>
+																	<c:when test="${order.buyerId eq sessionScope.login_user.id }">
+																		buy
+																	</c:when>
+																	<c:otherwise>
+																		sell
+																	</c:otherwise>
+																</c:choose>
+															</td>
+															<td><fmt:formatNumber type="currency" pattern="￥#,###.##" value="${order.price }"/></td>
+															<td><fmt:formatNumber type="currency" pattern="฿#,###.#########" value="${order.quantity }"/></td>
+															<td><fmt:formatNumber type="currency" pattern="￥#,###.##" value="${order.price * order.quantity }"/></td>
+															<td>${cos:display('STATE',order.state) }</td>
+															<td></td>
+														</tr>
+													</c:forEach>
+												</c:when>
+												<c:otherwise>
+													<tr>
+														<td colspan="7">
+															<fmt:message key="noRecords"/>
+														</td>
+													</tr>
+												</c:otherwise>
+											</c:choose>
+											
 										</tbody>
 										<tfoot>
 											<tr>

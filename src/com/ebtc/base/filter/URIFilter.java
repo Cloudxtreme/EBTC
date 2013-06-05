@@ -51,12 +51,20 @@ public class URIFilter implements Filter {
 		String uri = request.getRequestURI().toString();
 		uri = uri.substring(5);
 		//TODO 判断是否为静态文件
-		
-		if(URIRegistration.contains(uri)){
-			chain.doFilter(request, response);
+		if(uri.startsWith("/img") || uri.startsWith("/css") || uri.startsWith("/js")){
+			
 		}else{
-			request.getRequestDispatcher(uri_404).forward(request, response);
+			if(uri.equals("/")){
+				uri = "/index";
+			}
 		}
+		request.setAttribute("uri", uri);
+		chain.doFilter(request, response);
+//		if(URIRegistration.contains(uri)){
+//			chain.doFilter(request, response);
+//		}else{
+//			request.getRequestDispatcher(uri_404).forward(request, response);
+//		}
 		
 	}
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+	
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>cos</short-name>
+	<uri>/constantsTag</uri>
+	
+<!-- 	<tag> -->
+<!-- 	    <name>showInput</name> -->
+<!-- 	    <tag-class>org.wayga.tag.InputTag</tag-class> -->
+<!-- 	    <body-content>empty</body-content> -->
+<!-- 	    <attribute> -->
+<!-- 	        <name>name</name> -->
+<!-- 	        <required>false</required> -->
+<!-- 	        <rtexprvalue>true</rtexprvalue> -->
+<!-- 	    </attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>value</name> -->
+<!-- 	        <required>false</required> -->
+<!-- 	        <rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+<!-- 	 </tag> -->
+	 
+<!-- 	 <tag> -->
+<!-- 	 	<name>iterator</name> -->
+<!-- 	 	<tag-class>org.wayga.tag.IteratorTag</tag-class> -->
+<!-- 	 	<body-content>jsp</body-content> -->
+	 	
+<!-- 	 	<attribute> -->
+<!-- 	        <name>items</name> -->
+<!-- 	        <required>true</required> -->
+<!-- 	        <rtexprvalue>true</rtexprvalue> -->
+<!-- 	    </attribute> -->
+<!-- 		<attribute> -->
+<!-- 			<name>var</name> -->
+<!-- 	        <required>true</required> -->
+<!-- 	        <rtexprvalue>true</rtexprvalue> -->
+<!-- 		</attribute> -->
+	 	
+<!-- 	 </tag> -->
+		<function>  
+	    	<name>display</name>  
+	    	<function-class>com.ebtc.common.constants.CosFunctions</function-class>  
+	    	<function-signature>java.lang.String display(java.lang.String,java.lang.String)</function-signature>  
+	  	</function>  
+</taglib>

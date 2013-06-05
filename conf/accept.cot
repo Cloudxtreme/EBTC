@@ -1,3 +1,21 @@
 # 井号开头是注释
 
 /index
+#用户注册登陆
+/user/login
+/user/register
+/user/toRegist
+/user/uniqueChecker
+
+#交易大厅
+/trade
+#常见问题
+/FAQ
+
+
+#验证码
+/CaptchaServlet
+/CatptchaValidator
+
+#邮箱验证
+/validator

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.order.mapper.TradeMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="tradeNestedResultMap" type="Trade">
+    <id property="id" column="id"/>
+    <result property="ordersId" column="orders_id"/>
+    <result property="tradeOrderId" column="trade_order_id"/>
+    <result property="quantity" column="quantity"/>
+    <result property="totalamount" column="totalAmount"/>
+    <result property="createTime" column="create_time"/>
+    <result property="createUser" column="create_user"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectTrade" parameterType="Trade" resultMap="tradeNestedResultMap"><![CDATA[select t.id,t.orders_id,t.trade_order_id,t.quantity,t.totalAmount,t.create_time,t.create_user from trade t ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and t.id = #{id} ]]></if>
+      <if test="ordersId != null"><![CDATA[and t.orders_id = #{ordersId} ]]></if>
+      <if test="tradeOrderId != null"><![CDATA[and t.trade_order_id = #{tradeOrderId} ]]></if>
+      <if test="quantity != null"><![CDATA[and t.quantity = #{quantity} ]]></if>
+      <if test="totalamount != null"><![CDATA[and t.totalAmount = #{totalamount} ]]></if>
+      <if test="createTime != null"><![CDATA[and t.create_time = #{createTime} ]]></if>
+      <if test="createUser != null"><![CDATA[and t.create_user = #{createUser} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertTrade" parameterType="Trade" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into trade ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="ordersId != null"><![CDATA[,orders_id]]></if>
+      <if test="tradeOrderId != null"><![CDATA[,trade_order_id]]></if>
+      <if test="quantity != null"><![CDATA[,quantity]]></if>
+      <if test="totalamount != null"><![CDATA[,totalAmount]]></if>
+      <if test="createTime != null"><![CDATA[,create_time]]></if>
+      <if test="createUser != null"><![CDATA[,create_user]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="ordersId != null"><![CDATA[,#{ordersId}]]></if>
+      <if test="tradeOrderId != null"><![CDATA[,#{tradeOrderId}]]></if>
+      <if test="quantity != null"><![CDATA[,#{quantity}]]></if>
+      <if test="totalamount != null"><![CDATA[,#{totalamount}]]></if>
+      <if test="createTime != null"><![CDATA[,#{createTime}]]></if>
+      <if test="createUser != null"><![CDATA[,#{createUser}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateTrade" parameterType="Trade" flushCache="true"><![CDATA[update trade ]]>
+    <set>
+      <if test="ordersId != null"><![CDATA[orders_id=#{ordersId},]]></if>
+      <if test="tradeOrderId != null"><![CDATA[trade_order_id=#{tradeOrderId},]]></if>
+      <if test="quantity != null"><![CDATA[quantity=#{quantity},]]></if>
+      <if test="totalamount != null"><![CDATA[totalAmount=#{totalamount},]]></if>
+      <if test="createTime != null"><![CDATA[create_time=#{createTime},]]></if>
+      <if test="createUser != null"><![CDATA[create_user=#{createUser},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteTrade" parameterType="Trade" flushCache="true"><![CDATA[delete from trade ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="ordersId != null"><![CDATA[and orders_id = #{ordersId}]]></if>
+          <if test="tradeOrderId != null"><![CDATA[and trade_order_id = #{tradeOrderId}]]></if>
+          <if test="quantity != null"><![CDATA[and quantity = #{quantity}]]></if>
+          <if test="totalamount != null"><![CDATA[and totalAmount = #{totalamount}]]></if>
+          <if test="createTime != null"><![CDATA[and create_time = #{createTime}]]></if>
+          <if test="createUser != null"><![CDATA[and create_user = #{createUser}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--查询数量语句-->
+  <select id="countTrade" parameterType="Trade" resultType="int"><![CDATA[select count(*) from trade t ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and t.id = #{id} ]]></if>
+      <if test="ordersId != null"><![CDATA[and t.orders_id = #{ordersId} ]]></if>
+      <if test="tradeOrderId != null"><![CDATA[and t.trade_order_id = #{tradeOrderId} ]]></if>
+      <if test="quantity != null"><![CDATA[and t.quantity = #{quantity} ]]></if>
+      <if test="totalamount != null"><![CDATA[and t.totalAmount = #{totalamount} ]]></if>
+      <if test="createTime != null"><![CDATA[and t.create_time = #{createTime} ]]></if>
+      <if test="createUser != null"><![CDATA[and t.create_user = #{createUser} ]]></if>
+    </trim>
+  </select>
+</mapper>

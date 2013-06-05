@@ -22,6 +22,7 @@ CREATE  TABLE IF NOT EXISTS `EBTC`.`user` (
   `state` VARCHAR(2) NOT NULL COMMENT '状态 见Constants' ,
   `type` VARCHAR(2) NOT NULL COMMENT '类型 见 Constants' ,
   `create_time` TIMESTAMP NOT NULL COMMENT '创建时间' ,
+  `create_user` VARCHAR(10) NULL ,
   `last_login_time` TIMESTAMP NULL COMMENT '最后登陆时间' ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
@@ -37,8 +38,8 @@ DROP TABLE IF EXISTS `EBTC`.`CNY_account` ;
 CREATE  TABLE IF NOT EXISTS `EBTC`.`CNY_account` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
   `user_id` INT NOT NULL COMMENT '外键 用户id' ,
-  `balance` DECIMAL(12,2) NOT NULL COMMENT '人名币余额(总额)=可用额度+冻结额度' ,
-  `freeze` DECIMAL(12,2) NOT NULL COMMENT '冻结人民币额度' ,
+  `balance` DECIMAL(20,8) NOT NULL COMMENT '人名币余额(总额)=可用额度+冻结额度' ,
+  `freeze` DECIMAL(20,8) NOT NULL COMMENT '冻结人民币额度' ,
   `state` VARCHAR(2) NOT NULL COMMENT '状态 见 constants' ,
   `remark` VARCHAR(50) NULL COMMENT '备注 50' ,
   PRIMARY KEY (`id`) ,
@@ -90,26 +91,34 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `EBTC`.`order`
+-- Table `EBTC`.`orders`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `EBTC`.`order` ;
+DROP TABLE IF EXISTS `EBTC`.`orders` ;
 
-CREATE  TABLE IF NOT EXISTS `EBTC`.`order` (
+CREATE  TABLE IF NOT EXISTS `EBTC`.`orders` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `buyer_id` VARCHAR(10) NULL COMMENT '买方id' ,
-  `seller_id` VARCHAR(10) NULL COMMENT '卖方id' ,
-  `price` DECIMAL(12,2) NOT NULL COMMENT '单价 1个虚拟币的价格' ,
+  `user_id` INT NOT NULL ,
+  `price` DECIMAL(20,8) NOT NULL COMMENT '单价 1个虚拟币的价格' ,
   `quantity` DECIMAL(20,8) NOT NULL COMMENT '数量' ,
+  `remaining` DECIMAL(20,8) NOT NULL ,
   `type` VARCHAR(2) NOT NULL COMMENT '买卖类型 见 constants' ,
   `state` VARCHAR(2) NOT NULL COMMENT '状态 见 constants' ,
   `currency_type` VARCHAR(2) NOT NULL COMMENT '货币类型 见 constants' ,
-  `fee` DECIMAL(12,2) NOT NULL ,
+  `fee` DECIMAL(20,8) NOT NULL ,
   `fee_rate` DECIMAL(5,4) NOT NULL ,
   `create_time` TIMESTAMP NOT NULL COMMENT '创建时间' ,
   `create_user` VARCHAR(10) NOT NULL COMMENT '创建人' ,
   `done_time` TIMESTAMP NULL COMMENT '完成交易时间' ,
   `remark` VARCHAR(100) NULL COMMENT '备注 100' ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  INDEX `index4` USING HASH (`price` ASC) ,
+  INDEX `index5` USING HASH (`done_time` ASC) ,
+  INDEX `fk_orders_user1_idx` (`user_id` ASC) ,
+  CONSTRAINT `fk_orders_user1`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `EBTC`.`user` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -218,12 +227,55 @@ DROP TABLE IF EXISTS `EBTC`.`menu` ;
 
 CREATE  TABLE IF NOT EXISTS `EBTC`.`menu` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '主键' ,
-  `parent_id` INT NULL COMMENT '父id' ,
+  `parent_id` INT NOT NULL COMMENT '父id' ,
   `name` VARCHAR(40) NOT NULL COMMENT '名称' ,
   `uri` VARCHAR(150) NOT NULL COMMENT 'uri' ,
   `seq` VARCHAR(2) NOT NULL COMMENT '顺序' ,
-  `type` VARCHAR(2) NOT NULL COMMENT '类型 0:用户 1管理员' ,
+  `type` VARCHAR(2) NOT NULL COMMENT '类型' ,
   PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `EBTC`.`activate`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `EBTC`.`activate` ;
+
+CREATE  TABLE IF NOT EXISTS `EBTC`.`activate` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `value` VARCHAR(45) NULL COMMENT '值' ,
+  `code` VARCHAR(32) NULL COMMENT '码' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `index2` (`value` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `EBTC`.`trade`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `EBTC`.`trade` ;
+
+CREATE  TABLE IF NOT EXISTS `EBTC`.`trade` (
+  `id` INT NOT NULL ,
+  `orders_id` INT NOT NULL COMMENT '主订单id' ,
+  `trade_order_id` INT NOT NULL COMMENT '交易订单id' ,
+  `quantity` VARCHAR(45) NOT NULL COMMENT '数量' ,
+  `totalAmount` DECIMAL(20,8) NOT NULL COMMENT '金额' ,
+  `create_time` TIMESTAMP NOT NULL COMMENT '创建时间' ,
+  `create_user` VARCHAR(10) NOT NULL COMMENT '创建用户' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_trade_orders1_idx` (`orders_id` ASC) ,
+  INDEX `fk_trade_orders2_idx` (`trade_order_id` ASC) ,
+  CONSTRAINT `fk_trade_orders1`
+    FOREIGN KEY (`orders_id` )
+    REFERENCES `EBTC`.`orders` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_trade_orders2`
+    FOREIGN KEY (`trade_order_id` )
+    REFERENCES `EBTC`.`orders` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 USE `EBTC` ;

@@ -3,6 +3,10 @@ package com.ebtc.common.utils;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.apache.catalina.util.Base64;
+
+import com.sun.mail.util.BASE64EncoderStream;
+
 public class MD5Utils {
 	
 	/**
@@ -52,11 +56,11 @@ public class MD5Utils {
 	public static String getCodeMD5(byte[] source){
 		String md5 = getMD5(source);
 		
-		char[] charArr = md5.toCharArray();
+		String base64 = Base64.encode(md5.getBytes());
 		
-		Arrays.sort(charArr);
-		
-		return new String(charArr);
+		char[] charArr = base64.toCharArray();
+		String str = new String(Arrays.copyOfRange(charArr, 0, 16))+new String(Arrays.copyOfRange(charArr, 43-16, 43));
+		return str;
 	}
 	
 }

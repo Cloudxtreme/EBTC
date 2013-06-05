@@ -19,6 +19,11 @@
   <typeAliases>
     <typeAlias alias="User" type="com.ebtc.user.pojo.User"/>
     <typeAlias alias="Menu" type="com.ebtc.menu.pojo.Menu"/>
+    <typeAlias alias="Activate" type="com.ebtc.activate.pojo.Activate"/>
+    <typeAlias alias="CnyAccount" type="com.ebtc.account.pojo.CnyAccount"/>
+    <typeAlias alias="BtcAccount" type="com.ebtc.account.pojo.BtcAccount"/>
+    <typeAlias alias="Order" type="com.ebtc.order.pojo.Order"/>
+    <typeAlias alias="Trade" type="com.ebtc.order.pojo.Trade"/>
   </typeAliases>
   <!--plugins-->
   <plugins>
@@ -26,7 +31,15 @@
   </plugins>
   <!--mappers-->
   <mappers>
+    <!--   	custom mappers -->
+    <mapper resource="com/ebtc/order/mapper/QueryMyOrderList.xml"/>
+    <!--   	simple mappers -->
     <mapper resource="com/ebtc/user/mapper/UserMapper.xml"/>
     <mapper resource="com/ebtc/menu/mapper/MenuMapper.xml"/>
+    <mapper resource="com/ebtc/activate/mapper/ActivateMapper.xml"/>
+    <mapper resource="com/ebtc/account/mapper/CnyAccountMapper.xml"/>
+    <mapper resource="com/ebtc/account/mapper/BtcAccountMapper.xml"/>
+    <mapper resource="com/ebtc/order/mapper/OrderMapper.xml"/>
+    <mapper resource="com/ebtc/order/mapper/TradeMapper.xml"/>
   </mappers>
 </configuration>

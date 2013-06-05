@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.account.mapper.BtcAccountMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="btcAccountNestedResultMap" type="BtcAccount">
+    <id property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="balance" column="balance"/>
+    <result property="freeze" column="freeze"/>
+    <result property="purseAddr" column="purse_addr"/>
+    <result property="state" column="state"/>
+    <result property="remark" column="remark"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectBtcAccount" parameterType="BtcAccount" resultMap="btcAccountNestedResultMap"><![CDATA[select Ba.id,Ba.user_id,Ba.balance,Ba.freeze,Ba.purse_addr,Ba.state,Ba.remark from BTC_account Ba ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and Ba.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and Ba.user_id = #{userId} ]]></if>
+      <if test="balance != null"><![CDATA[and Ba.balance = #{balance} ]]></if>
+      <if test="freeze != null"><![CDATA[and Ba.freeze = #{freeze} ]]></if>
+      <if test="purseAddr != null"><![CDATA[and Ba.purse_addr = #{purseAddr} ]]></if>
+      <if test="state != null"><![CDATA[and Ba.state = #{state} ]]></if>
+      <if test="remark != null"><![CDATA[and Ba.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertBtcAccount" parameterType="BtcAccount" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into BTC_account ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="userId != null"><![CDATA[,user_id]]></if>
+      <if test="balance != null"><![CDATA[,balance]]></if>
+      <if test="freeze != null"><![CDATA[,freeze]]></if>
+      <if test="purseAddr != null"><![CDATA[,purse_addr]]></if>
+      <if test="state != null"><![CDATA[,state]]></if>
+      <if test="remark != null"><![CDATA[,remark]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="userId != null"><![CDATA[,#{userId}]]></if>
+      <if test="balance != null"><![CDATA[,#{balance}]]></if>
+      <if test="freeze != null"><![CDATA[,#{freeze}]]></if>
+      <if test="purseAddr != null"><![CDATA[,#{purseAddr}]]></if>
+      <if test="state != null"><![CDATA[,#{state}]]></if>
+      <if test="remark != null"><![CDATA[,#{remark}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateBtcAccount" parameterType="BtcAccount" flushCache="true"><![CDATA[update BTC_account ]]>
+    <set>
+      <if test="userId != null"><![CDATA[user_id=#{userId},]]></if>
+      <if test="balance != null"><![CDATA[balance=#{balance},]]></if>
+      <if test="freeze != null"><![CDATA[freeze=#{freeze},]]></if>
+      <if test="purseAddr != null"><![CDATA[purse_addr=#{purseAddr},]]></if>
+      <if test="state != null"><![CDATA[state=#{state},]]></if>
+      <if test="remark != null"><![CDATA[remark=#{remark},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteBtcAccount" parameterType="BtcAccount" flushCache="true"><![CDATA[delete from BTC_account ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="userId != null"><![CDATA[and user_id = #{userId}]]></if>
+          <if test="balance != null"><![CDATA[and balance = #{balance}]]></if>
+          <if test="freeze != null"><![CDATA[and freeze = #{freeze}]]></if>
+          <if test="purseAddr != null"><![CDATA[and purse_addr = #{purseAddr}]]></if>
+          <if test="state != null"><![CDATA[and state = #{state}]]></if>
+          <if test="remark != null"><![CDATA[and remark = #{remark}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--查询数量语句-->
+  <select id="countBtcAccount" parameterType="BtcAccount" resultType="int"><![CDATA[select count(*) from BTC_account Ba ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and Ba.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and Ba.user_id = #{userId} ]]></if>
+      <if test="balance != null"><![CDATA[and Ba.balance = #{balance} ]]></if>
+      <if test="freeze != null"><![CDATA[and Ba.freeze = #{freeze} ]]></if>
+      <if test="purseAddr != null"><![CDATA[and Ba.purse_addr = #{purseAddr} ]]></if>
+      <if test="state != null"><![CDATA[and Ba.state = #{state} ]]></if>
+      <if test="remark != null"><![CDATA[and Ba.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+</mapper>

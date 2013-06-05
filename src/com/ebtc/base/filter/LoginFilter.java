@@ -60,7 +60,7 @@ public class LoginFilter implements Filter {
 		//是静态文件
 		if(accept.contains(uri)){
 			
-		}else if(uri.startsWith("/img") || uri.startsWith("/css") || uri.startsWith("/js")){
+		}else if(uri.startsWith("/img") || uri.startsWith("/css") || uri.startsWith("/js") || uri.startsWith("/validator")){
 			
 		}else{
 			User user = (User) session.getAttribute(Constants.LOGIN_USER);

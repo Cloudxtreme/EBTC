@@ -7,9 +7,72 @@
 <script type="text/javascript" src="${ctx}/js/jquery.sparkline.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/flot/jquery.flot.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/flot/jquery.flot.selection.min.js"></script>
-
+<!-- JSON -->
+<script type="text/javascript" src="${ctx}/js/json/json2.min.js"></script>
+<!-- WS_OPERATIONS_COMMUNICATIONS -->
+<script type="text/javascript" src="${ctx}/js/ebtc/operations_communications.js"></script>
 <script type="text/javascript">
+	
+	
 	$(document).ready(function(){
+		
+		serviceRequest(["currentRate","transactionRecord"]);
+		
+		$("#buyPrice").keypress(function(event) {  
+            var keyCode = event.keyCode || event.which;
+            if (keyCode == 8 || keyCode == 46 || (keyCode >= 48 && keyCode <=57)){
+                return true;  
+            }else{
+                return false;  
+            }  
+        }).focus(function() {  
+            this.style.imeMode='disabled';  
+        }).bind("keyup",function(){
+        	computePrice('buy');
+        });
+		
+		$("#buyQuantity").keypress(function(event) {  
+            var keyCode = event.keyCode || event.which;
+            if (keyCode == 8 || keyCode == 46 || (keyCode >= 48 && keyCode <=57)){
+                return true;  
+            }else{
+                return false;  
+            }  
+        }).focus(function() {  
+            this.style.imeMode='disabled';  
+        }).bind("keyup",function(){
+        	computePrice('buy');
+        });;
+        
+        
+        $("#sellPrice").keypress(function(event) {  
+            var keyCode = event.keyCode || event.which;
+            if (keyCode == 8 || keyCode == 46 || (keyCode >= 48 && keyCode <=57)){
+                return true;  
+            }else{
+                return false;  
+            }  
+        }).focus(function() {  
+            this.style.imeMode='disabled';  
+        }).bind("keyup",function(){
+        	computePrice('sell');
+        });
+		
+		$("#sellQuantity").keypress(function(event) {  
+            var keyCode = event.keyCode || event.which;
+            if (keyCode == 8 || keyCode == 46 || (keyCode >= 48 && keyCode <=57)){
+                return true;  
+            }else{
+                return false;  
+            }  
+        }).focus(function() {  
+            this.style.imeMode='disabled';  
+        }).bind("keyup",function(){
+        	computePrice('sell');
+        });;
+        
+        
+        
 		
 		var fh_data = [
 		{
@@ -112,7 +175,7 @@
 						<div class="column width6 first">
 							<div class="content-box corners">
 								<header id="news">
-									<h3>最新消息(News)</h3>
+									<h3><fmt:message key="News"/></h3>
 								</header>
 								<section class="W_98">
 									<table class="no-style full">
@@ -147,7 +210,7 @@
 						<div class="column width6 first">
 							<div class="content-box corners content-box">
 								<header>
-									<h3>交易记录</h3>
+									<h3><fmt:message key="TransactionRecords"/></h3>
 								</header>
 								<section class="W_98">
 									<table class="no-style full center">
@@ -239,11 +302,11 @@
 <!-- 					实时委单 -->
 					<div class="content-box corners">
 						<header>
-							<h3>实时价格</h3>
+							<h3><fmt:message key="CurrentRate"/></h3>
 						</header>
 						<section class="full">
 							<table class="no-style full">
-								<tbody class="red_td">
+								<tbody id="highPriceBuy" class="red_td">
 									<tr>
 										<td>买(5)</td>
 										<td>￥700</td>
@@ -270,7 +333,7 @@
 										<td>฿1.04</td>
 									</tr>
 								</tbody>
-								<tfoot class="green_td">
+								<tfoot id="lowPriceSell" class="green_td">
 									<tr>
 										<td >卖(1)</td>
 										<td>￥700</td>
@@ -303,44 +366,46 @@
 <!-- 					买入BTC -->
 					<div class="content-box corners">
 						<header>
-							<h3>买入BTC</h3>
+							<h3><fmt:message key="BuyBTC"/></h3>
 						</header>
 						<section class="full">
+							<input type="hidden" id="buyHandlingFeeRate" value="${applicationScope.buyHandlingFeeRate }"/>
+							<input type="hidden" id="buyBestPrice" value="0")/>
 							<table class="no-style full">
 								<tbody>
 									<tr>
 										<td>当前余额</td>
-										<td>700</td>
+										<td id="buyUsableBalance">${sessionScope.cny_account.balance - sessionScope.cny_account.freeze + 0}</td>
 										<td>CNY</td>
 									</tr>
 									<tr>
 										<td>可买入数量</td>
-										<td>0.00</td>
+										<td id="buyableQuantity">0</td>
 										<td>BTC</td>
 									</tr>
 									<tr>
 										<td>买入价格</td>
-										<td><input style="width:50px" /></td>
+										<td><input id="buyPrice" style="width:50px" value="" type="number" /></td>
 										<td>CNY/BTC</td>
 									</tr>
 									<tr>
 										<td>买入数量</td>
-										<td><input style="width:50px" /></td>
+										<td><input id="buyQuantity" style="width:50px" value="" type="number"/></td>
 										<td>BTC</td>
 									</tr>
 									<tr>
 										<td>总额</td>
-										<td>800</td>
+										<td id="buyTotalSpend">0</td>
 										<td>CNY</td>
 									</tr>
 									<tr>
 										<td>手续费</td>
-										<td>800</td>
-										<td>CNY(0.2%)</td>
+										<td id="buyHandlingFee">0</td>
+										<td>CNY(<fmt:formatNumber type="currency" pattern="#,###.##%" value="${applicationScope.buyHandlingFeeRate }"/>)</td>
 									</tr>
 									<tr class="center">
 										<td colspan="3">
-											<a class="btn btn-red" href="#">确认购买(CNY-BTC)</a>
+											<a class="btn btn-red" onclick="newOrder('buy');">确认购买(CNY-BTC)</a>
 										</td>
 									</tr>
 								</tbody>
@@ -351,39 +416,41 @@
 <!-- 					卖出BTC -->
 					<div class="content-box corners">
 						<header>
-							<h3>卖出BTC</h3>
+							<h3><fmt:message key="SellBTC"/></h3>
 						</header>
 						<section class="full">
+							<input type="hidden" id="sellHandlingFeeRate" value="${applicationScope.sellHandlingFeeRate }"/>
+							<input type="hidden" id="sellBestPrice" value="0")/>
 							<table class="no-style full">
 								<tbody>
 									<tr>
 										<td>当前余额</td>
-										<td>700</td>
+										<td id="sellUsableBalance">${sessionScope.btc_account.balance - sessionScope.btc_account.freeze + 0}</td>
 										<td>BTC</td>
 									</tr>
 									<tr>
 										<td>卖出价格</td>
-										<td><input style="width:50px" /></td>
+										<td><input id="sellPrice" style="width:50px" /></td>
 										<td>CNY/BTC</td>
 									</tr>
 									<tr>
 										<td>卖出数量</td>
-										<td><input style="width:50px" /></td>
+										<td><input id="sellQuantity" style="width:50px" /></td>
 										<td>BTC</td>
 									</tr>
 									<tr>
 										<td>总额</td>
-										<td>800</td>
+										<td id="totalSellAmount">0</td>
 										<td>CNY</td>
 									</tr>
 									<tr>
 										<td>手续费</td>
-										<td>800</td>
+										<td id="sellHandlingFee">0</td>
 										<td>CNY(0.2%)</td>
 									</tr>
 									<tr class="center">
 										<td colspan="3">
-											<a class="btn btn-green" href="#">确认卖出(BTC-CNY)</a>
+											<a class="btn btn-green" onclick="newOrder('sell');">确认卖出(BTC-CNY)</a>
 										</td>
 									</tr>
 								</tbody>
@@ -394,7 +461,7 @@
 <!-- 					联系客服 -->
 					<div class="content-box corners">
 						<header>
-							<h3>联系客服</h3>
+							<h3><fmt:message key="CustomerService"/></h3>
 						</header>
 						<section class="full">
 							<table class="no-style full">

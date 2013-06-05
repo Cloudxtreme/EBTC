@@ -1,6 +1,10 @@
+<%@page import="java.util.Locale"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> --%>
+<%@ page import="com.ebtc.common.constants.Constants;" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -36,6 +40,8 @@
 <script type="text/javascript" src="${ctx}/js/jquery.nyroModal.pack.js"></script>
 <!-- jQuery model Divbox -->
 <script type="text/javascript" src="${ctx}/js/jquery.divbox.js"></script>
+<!-- administry.js -->
+<script type="text/javascript" SRC="js/administry.js"></script>
 <!-- Internet Explorer Fixes --> 
 <!--[if IE]>
 <link rel="stylesheet" type="text/css" media="all" href="${ctx}/css/ie.css"/>
@@ -46,13 +52,26 @@
 <script src="${ctx}/js/IE8.js"></script>
 <![endif]-->
 	<script type="text/javascript"> 
-		function opernRegister() { 
+	
+		function openLoginBox(){
+			$("#login_div").OpenDiv(); 
+		}
+	
+		function openRegister() { 
 			$("#register_div").OpenDiv(); 
 			var url = "${ctx}/user/toRegist";
 			$('#openRegist_form').attr('target','regist_iframe').attr('action',url).submit();
 		} 
-		function closeRegister() { 
-			$("#register_div").CloseDiv(); 
+		
+		function login(){
+			var loginForm = $('#login_form');
+			loginForm.attr('action','${ctx }/user/login');
+			loginForm.attr('method','post');
+			loginForm.submit();
+		}
+		
+		function closeRegister(tar) {
+			$(tar).parent('.model_div').CloseDiv();
 		} 
 		
 		$(function(){
@@ -63,11 +82,19 @@
 </head>
 <body>
 <!-- 注册页面用的模态层 -->
-	<div id="register_div" class="model_div corners">
-		<div class="close_btn" onclick="closeRegister()">关闭</div>
+	<div id="register_div" class="model_div register_div corners">
+		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
 		<form target="regist_iframe" id="openRegist_form" action=""></form>
-		<iframe style="width:100%;height:510px;" id="regist_iframe" name="regist_iframe"></iframe>
+		<iframe style="width:100%;height:535px;" id="regist_iframe" name="regist_iframe"></iframe>
 	</div> 
+<!-- 	登陆窗口用的模态层 -->
+	<div id="login_div" class="model_div login_div corners">
+		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
+	</div>
+<!-- 	弹出消息用模态层 -->
+	<div id="message_div" class="model_div message_div corners">
+		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
+	</div>
 	<!-- Header -->
 	<header id="top">
 		<div class="wrapper">
@@ -77,53 +104,79 @@
 			<div id="topnav">
 <!-- 				<a href="#"><img class="avatar" src="${ctx}/img/user_32.png" alt="" /></a> -->
 				<div>
-					<form action="">
-						用户名<input style="margin:5px;width:100px"/>
-						密码<input style="margin:5px;width:100px" /><br>
-						<a href="#">忘记密码</a>
-						<span>|</span>
-						<a href="#">没有账号？</a></br>
-						<a style="padding:4px;margin:5px" class="btn btn-blue" onclick="">点我登陆</a>
-						<a style="padding:4px;margin:5px" class="btn btn-green" onclick="opernRegister()">点我注册</a>
-					</form>
+					<c:choose>
+						<c:when test="${empty sessionScope.login_user }">
+							<form id="login_form" action="">
+								<fmt:message key="username"/><input style="margin:5px;width:100px" name="username" value="${sessionScope.username }"/>
+								<c:remove var="username" scope="session" />
+								<fmt:message key="password"/><input style="margin:5px;width:100px" name="password" type="password" /><br>
+								<c:if test="${not empty sessionScope.error }">
+									<small style="color:red;"><fmt:message key="${error }" /></br></small>
+									<c:remove  var="error"  scope="session"  />
+								</c:if>
+								<a href="#"><fmt:message key="forgotPassword"/></a>
+								<span>|</span>
+								<a href="#"><fmt:message key="forgotUsername"/></a></br>
+								<a style="padding:4px;margin:5px" class="btn btn-blue" onclick="login()"><fmt:message key="login"/></a>
+								<a style="padding:4px;margin:5px" class="btn btn-green" onclick="openRegister()"><fmt:message key="signUp"/></a>
+							</form>
+						</c:when>
+						<c:otherwise>
+							欢迎回来! <b id="login_user">${sessionScope.login_user.nickname }</b>
+							<span>|</span> <a href="${ctx }/user/logout">退出</a><br />
+							<small>您有<a href="#" ><b>1</b> 新信息!</a></small>
+						</c:otherwise>
+					</c:choose>
 				</div>
-<!-- 				欢迎回来! <b>Admin</b> -->
-<!-- 				<span>|</span> <a href="#">退出</a><br /> -->
-<!-- 				<small>您有<a href="#" class="high"><b>1</b> 新信息!</a></small> -->
 			</div>
 			<!-- End of Top navigation -->
 			
 			<!-- Main navigation -->
 			<nav id="menu">
 				<ul class="sf-menu">
-					<li class="current"><a href="dashboard.html">Dash1board</a></li>
-					<li>
-						<a href="styles.html">Styles</a>
-						<ul>
-							<li>
-								<a href="styles.html">Basic Styles</a>
-							</li>
-							<li>
-								<a href="#">Sample Pages...</a>
+					<c:forEach items="${applicationScope.user_menu }" var="menu">
+						<c:choose>
+							<c:when test="${fn:contains(requestScope.uri,menu.uri) }">
+								<li class="current">
+							</c:when>
+							<c:otherwise>
+								<li>
+							</c:otherwise>
+						</c:choose>
+							<a href="${ctx }${menu.uri }"><fmt:message key="${menu.name }" /></a>
+							<c:if test="${not empty menu.subMenus }">
 								<ul>
-									<li><a href="samples-files.html">Files</a></li>
-									<li><a href="samples-products.html">Products</a></li>
+									<c:forEach items="${ctx }${menu.subMenus }" var="subMenu">
+										<li>
+											<a href="${ctx }${subMenu.uri }"><fmt:message key="${subMenu.name }" /></a>
+										</li>
+									</c:forEach>
 								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><a href="tables.html">Tables</a></li>
-					<li><a href="forms.html">Forms</a></li>	
-					<li><a href="graphs.html">Graphs</a></li>	
+							</c:if>
+						</li>
+					</c:forEach>
 				</ul>
 			</nav>
 			<!-- End of Main navigation -->
 			<!-- Aside links -->
-<!-- 			<aside><b>English</b> &middot; <a href="#">Spanish</a> &middot; <a href="#">German</a></aside> -->
+			<%=request.getLocale().toString() %>
+			<%if(request.getLocale().equals(Locale.US)){%>
+			<aside><b style="color:white">English</b> &middot; 
+			<a href="?locale=zh_CN">简体中文</a> &middot; 
+			<a href="?locale=zh_TW">繁体中文</a></aside>
+			<%} else if(request.getLocale().equals(Locale.CHINA)){%>
+			<aside><a href="?locale=en_US">English</a> &middot; 
+			<b style="color:white">简体中文</b> &middot; 
+			<a href="?locale=zh_TW">繁体中文</a></aside>
+			<%}else if(request.getLocale().equals(Locale.TAIWAN)){ %>
+			<aside><a href="?locale=en_US">English</a> &middot; 
+			<a href="?locale=zh_CN">简体中文</a> &middot; 
+			<b style="color:white">繁体中文</b></aside>
+			<%} %>
 			<!-- End of Aside links -->
 		</div>
 	</header>
 	<!-- End of Header -->
 	<!-- End of Page title -->
-	
+	<div id="currentRateData" style="display:none;"></div>
 	

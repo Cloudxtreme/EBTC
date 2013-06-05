@@ -26,7 +26,6 @@ public class Dialect {
 	}
 	
 	public String getTotalRowNumSql(String sql){
-		sql = sql.toUpperCase();
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT COUNT(*) FROM (");
 		sb.append(sql);
@@ -35,7 +34,6 @@ public class Dialect {
 	}
 	
 	private String getMysqlPaginationSql(String sql, PaginationInfo pageInfo) {
-		sql = sql.toUpperCase();
 		pageInfo.init();
 		String sortCol = pageInfo.getSortCol();
 		SortOrder sortOrder = pageInfo.getSortOrder();

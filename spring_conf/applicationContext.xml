@@ -17,19 +17,27 @@
       http://www.springframework.org/schema/aop
       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"  default-autowire="byName">
       
+      	<!-- 引入配置文件 -->
+      	<context:property-placeholder location="classpath:sys_props.properties"/>
+      
+		<!-- mailService -->
+		<bean id="mailService" name="mailService" class="com.ebtc.base.service.impl.MailServiceImpl">
+			<property name="host" value="${mail_host}"></property>
+			<property name="personalName" value="${mail_personalName}"></property>
+			<property name="username" value="${mail_username}"></property>
+			<property name="password" value="${mail_password}"></property>
+		</bean>
+      
       	<!-- 自动扫描 dao层和service层-->
       	<context:component-scan base-package="com.ebtc.*.dao"></context:component-scan>
       	<context:component-scan base-package="com.ebtc.*.service"></context:component-scan>
-      
-      	<!-- 引入配置文件 -->
-      	<context:property-placeholder location="classpath:jdbc.properties"/>
-      
+		
       	<!-- 数据源 -->
       	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-	      	<property name="driverClassName" value="${driver}"></property>
-	      	<property name="url" value="${url}"></property>
-	      	<property name="username" value="${username}"></property>
-	      	<property name="password" value="${password}"></property>
+	      	<property name="driverClassName" value="${jdbc_driver}"></property>
+	      	<property name="url" value="${jdbc_url}"></property>
+	      	<property name="username" value="${jdbc_username}"></property>
+	      	<property name="password" value="${jdbc_password}"></property>
       	</bean>
       
      	<!-- myBatis sqlSessionFactory -->
@@ -39,6 +47,11 @@
       	</bean>
       	<bean id="sqlSession"     class="org.mybatis.spring.SqlSessionTemplate"> 
       		<constructor-arg index="0" ref="sqlSessionFactory" /> 
+		</bean>
+		
+<!-- 		jdbcDaoSupport -->
+		<bean id="JDBCDaoSupport" class="com.ebtc.base.dao.JDBCDaoSupport">
+			<property name="dataSource" ref="dataSource"></property>
 		</bean>
       
       	<!-- 强制使用CGLIB代理  -->
@@ -72,6 +85,8 @@
 	            
 	            <tx:method name="delete*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
 	            <tx:method name="remove*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
+	            
+	            <tx:method name="*" propagation="REQUIRED" isolation="REPEATABLE_READ" />
         	</tx:attributes>
       	</tx:advice>
       

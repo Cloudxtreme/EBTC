@@ -1,5 +1,6 @@
 package com.ebtc.base.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -54,7 +55,7 @@ public abstract class GenericDaoImpl<POJO extends Pojo> implements GenericDao<PO
 	public int count(POJO pojo) throws DataAccessException{
 		String javaType = pojo.getClass().getName();
 		String sqlName = getCountName(javaType);
-		return getSqlSession().update(sqlName, pojo);
+		return getSqlSession().selectOne(sqlName, pojo);
 	}
 
 	@Override
@@ -207,6 +208,27 @@ public abstract class GenericDaoImpl<POJO extends Pojo> implements GenericDao<PO
 
 	public void setSqlSession(SqlSessionTemplate sqlSession) {
 		this.sqlSession = sqlSession;
+	}
+
+	@Override
+	public int executeUpdate(String mapperLocation,Object param) throws DataAccessException {
+		return getSqlSession().update(mapperLocation, param);
+	}
+
+	@Override
+	public List<POJO> executeQuery(String mapperLocation, HashMap param)
+			throws DataAccessException {
+		return getSqlSession().selectList(mapperLocation, param);
+	}
+
+	@Override
+	public PaginationResult<POJO> executeQuery(String mapperLocation,
+			HashMap param, PaginationInfo pageInfo) throws DataAccessException {
+		PaginationContext.set(pageInfo);
+		PaginationResult<POJO> pageResult = new PaginationResult<POJO>();
+		pageResult.setData(executeQuery(mapperLocation,param));
+		pageResult.setPaginationInfo(pageInfo);
+		return pageResult;
 	}
 
 }

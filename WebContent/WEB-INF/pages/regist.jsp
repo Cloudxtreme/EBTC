@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> --%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -53,7 +53,7 @@
 					jQuery.validator.addMethod("isMobile", function(value, element) {
 					var length = value.length;
 					return this.optional(element)
-					|| (length == 11 && /^(((13[0-9]{1})|(15[0-9]{1}))+\d{8})$/
+					|| (length == 11 && /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/
 					.test(value));
 					}, "<font color='red'>请正确填写您的手机号码</font>");
 					
@@ -200,11 +200,20 @@
 				
 			</script>
 		
-			<form id="registForm" method="post" action="#">
+			<form id="registForm" method="post" action="${ctx }/user/register">
 				<div style="margin-left:10px; margin-top:10px;margin-right:10px;">
 					<fieldset>
 						<legend>感谢您注册易比特,我们将竭诚为您提供最优质的服务!</legend>
 						<div style="margin-left:10px;">
+							<c:if test="${not empty requestScope.info }">
+								<div class="box box-info">${requestScope.info }</div>
+							</c:if>
+							<c:if test="${not empty requestScope.error }">
+								<div class="box box-error">${requestScope.error }</div>
+							</c:if>
+							<c:if test="${not empty requestScope.warn }">
+								<div class="box box-warning">${requestScope.warn }</div>
+							</c:if>
 							<p>
 								<label class="required" for="username">用户名:</label><br/>
 								<input type="text" id="username" class="half" value="" name="username"/>

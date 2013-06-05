@@ -29,11 +29,25 @@ this file, and modify it to your liking.
 
 /* 弹出模态层 */
 
+.register_div{
+	width: 700px; 
+	height: 555px; 
+}
+
+.login_div{
+	width:400px;
+	height:300px;
+}
+
+
+.message_div{
+	width:400px;
+	height:300px;
+}
+
 .model_div
 { 
 	position: absolute; 
-	width: 700px; 
-	height: 550px; 
 	font-size: 12px; 
 	background: #fff; 
 	border: 0px solid #000; 
@@ -55,6 +69,9 @@ this file, and modify it to your liking.
 	background:#999;
 }
 
+.red{
+	color:red;
+}
 
 .header{
 	

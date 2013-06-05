@@ -16,15 +16,15 @@ import com.ebtc.menu.service.MenuService;
  * @date 2013-5-16 下午9:14:19 
  *
  */
-@Service
+@Service("menuService")
 public class MenuServiceImpl extends GenericServiceImpl<Menu, MenuDao>
 		implements MenuService {
 
 	@Autowired
-	private MenuDao dao;
+	private MenuDao menuDao;
 
 	@Override
 	public MenuDao getDao() {
-		return dao;
+		return menuDao;
 	}
 }

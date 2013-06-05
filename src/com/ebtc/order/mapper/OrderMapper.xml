@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.order.mapper.OrderMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="orderNestedResultMap" type="Order">
+    <id property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="price" column="price"/>
+    <result property="quantity" column="quantity"/>
+    <result property="remaining" column="remaining"/>
+    <result property="type" column="type"/>
+    <result property="state" column="state"/>
+    <result property="currencyType" column="currency_type"/>
+    <result property="fee" column="fee"/>
+    <result property="feeRate" column="fee_rate"/>
+    <result property="createTime" column="create_time"/>
+    <result property="createUser" column="create_user"/>
+    <result property="doneTime" column="done_time"/>
+    <result property="remark" column="remark"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectOrder" parameterType="Order" resultMap="orderNestedResultMap"><![CDATA[select o.id,o.user_id,o.price,o.quantity,o.remaining,o.type,o.state,o.currency_type,o.fee,o.fee_rate,o.create_time,o.create_user,o.done_time,o.remark from orders o ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and o.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and o.user_id = #{userId} ]]></if>
+      <if test="price != null"><![CDATA[and o.price = #{price} ]]></if>
+      <if test="quantity != null"><![CDATA[and o.quantity = #{quantity} ]]></if>
+      <if test="remaining != null"><![CDATA[and o.remaining = #{remaining} ]]></if>
+      <if test="type != null"><![CDATA[and o.type = #{type} ]]></if>
+      <if test="state != null"><![CDATA[and o.state = #{state} ]]></if>
+      <if test="currencyType != null"><![CDATA[and o.currency_type = #{currencyType} ]]></if>
+      <if test="fee != null"><![CDATA[and o.fee = #{fee} ]]></if>
+      <if test="feeRate != null"><![CDATA[and o.fee_rate = #{feeRate} ]]></if>
+      <if test="createTime != null"><![CDATA[and o.create_time = #{createTime} ]]></if>
+      <if test="createUser != null"><![CDATA[and o.create_user = #{createUser} ]]></if>
+      <if test="doneTime != null"><![CDATA[and o.done_time = #{doneTime} ]]></if>
+      <if test="remark != null"><![CDATA[and o.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertOrder" parameterType="Order" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into orders ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="userId != null"><![CDATA[,user_id]]></if>
+      <if test="price != null"><![CDATA[,price]]></if>
+      <if test="quantity != null"><![CDATA[,quantity]]></if>
+      <if test="remaining != null"><![CDATA[,remaining]]></if>
+      <if test="type != null"><![CDATA[,type]]></if>
+      <if test="state != null"><![CDATA[,state]]></if>
+      <if test="currencyType != null"><![CDATA[,currency_type]]></if>
+      <if test="fee != null"><![CDATA[,fee]]></if>
+      <if test="feeRate != null"><![CDATA[,fee_rate]]></if>
+      <if test="createTime != null"><![CDATA[,create_time]]></if>
+      <if test="createUser != null"><![CDATA[,create_user]]></if>
+      <if test="doneTime != null"><![CDATA[,done_time]]></if>
+      <if test="remark != null"><![CDATA[,remark]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="userId != null"><![CDATA[,#{userId}]]></if>
+      <if test="price != null"><![CDATA[,#{price}]]></if>
+      <if test="quantity != null"><![CDATA[,#{quantity}]]></if>
+      <if test="remaining != null"><![CDATA[,#{remaining}]]></if>
+      <if test="type != null"><![CDATA[,#{type}]]></if>
+      <if test="state != null"><![CDATA[,#{state}]]></if>
+      <if test="currencyType != null"><![CDATA[,#{currencyType}]]></if>
+      <if test="fee != null"><![CDATA[,#{fee}]]></if>
+      <if test="feeRate != null"><![CDATA[,#{feeRate}]]></if>
+      <if test="createTime != null"><![CDATA[,#{createTime}]]></if>
+      <if test="createUser != null"><![CDATA[,#{createUser}]]></if>
+      <if test="doneTime != null"><![CDATA[,#{doneTime}]]></if>
+      <if test="remark != null"><![CDATA[,#{remark}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateOrder" parameterType="Order" flushCache="true"><![CDATA[update orders ]]>
+    <set>
+      <if test="userId != null"><![CDATA[user_id=#{userId},]]></if>
+      <if test="price != null"><![CDATA[price=#{price},]]></if>
+      <if test="quantity != null"><![CDATA[quantity=#{quantity},]]></if>
+      <if test="remaining != null"><![CDATA[remaining=#{remaining},]]></if>
+      <if test="type != null"><![CDATA[type=#{type},]]></if>
+      <if test="state != null"><![CDATA[state=#{state},]]></if>
+      <if test="currencyType != null"><![CDATA[currency_type=#{currencyType},]]></if>
+      <if test="fee != null"><![CDATA[fee=#{fee},]]></if>
+      <if test="feeRate != null"><![CDATA[fee_rate=#{feeRate},]]></if>
+      <if test="createTime != null"><![CDATA[create_time=#{createTime},]]></if>
+      <if test="createUser != null"><![CDATA[create_user=#{createUser},]]></if>
+      <if test="doneTime != null"><![CDATA[done_time=#{doneTime},]]></if>
+      <if test="remark != null"><![CDATA[remark=#{remark},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteOrder" parameterType="Order" flushCache="true"><![CDATA[delete from orders ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="userId != null"><![CDATA[and user_id = #{userId}]]></if>
+          <if test="price != null"><![CDATA[and price = #{price}]]></if>
+          <if test="quantity != null"><![CDATA[and quantity = #{quantity}]]></if>
+          <if test="remaining != null"><![CDATA[and remaining = #{remaining}]]></if>
+          <if test="type != null"><![CDATA[and type = #{type}]]></if>
+          <if test="state != null"><![CDATA[and state = #{state}]]></if>
+          <if test="currencyType != null"><![CDATA[and currency_type = #{currencyType}]]></if>
+          <if test="fee != null"><![CDATA[and fee = #{fee}]]></if>
+          <if test="feeRate != null"><![CDATA[and fee_rate = #{feeRate}]]></if>
+          <if test="createTime != null"><![CDATA[and create_time = #{createTime}]]></if>
+          <if test="createUser != null"><![CDATA[and create_user = #{createUser}]]></if>
+          <if test="doneTime != null"><![CDATA[and done_time = #{doneTime}]]></if>
+          <if test="remark != null"><![CDATA[and remark = #{remark}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--查询数量语句-->
+  <select id="countOrder" parameterType="Order" resultType="int"><![CDATA[select count(*) from orders o ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and o.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and o.user_id = #{userId} ]]></if>
+      <if test="price != null"><![CDATA[and o.price = #{price} ]]></if>
+      <if test="quantity != null"><![CDATA[and o.quantity = #{quantity} ]]></if>
+      <if test="remaining != null"><![CDATA[and o.remaining = #{remaining} ]]></if>
+      <if test="type != null"><![CDATA[and o.type = #{type} ]]></if>
+      <if test="state != null"><![CDATA[and o.state = #{state} ]]></if>
+      <if test="currencyType != null"><![CDATA[and o.currency_type = #{currencyType} ]]></if>
+      <if test="fee != null"><![CDATA[and o.fee = #{fee} ]]></if>
+      <if test="feeRate != null"><![CDATA[and o.fee_rate = #{feeRate} ]]></if>
+      <if test="createTime != null"><![CDATA[and o.create_time = #{createTime} ]]></if>
+      <if test="createUser != null"><![CDATA[and o.create_user = #{createUser} ]]></if>
+      <if test="doneTime != null"><![CDATA[and o.done_time = #{doneTime} ]]></if>
+      <if test="remark != null"><![CDATA[and o.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+</mapper>

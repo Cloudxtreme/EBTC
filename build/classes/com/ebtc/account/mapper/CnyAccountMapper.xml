@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ebtc.account.mapper.CnyAccountMapper">
+  <!--嵌套查询(子查询)结果集和子查询-->
+  <resultMap id="cnyAccountNestedResultMap" type="CnyAccount">
+    <id property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="balance" column="balance"/>
+    <result property="freeze" column="freeze"/>
+    <result property="state" column="state"/>
+    <result property="remark" column="remark"/>
+  </resultMap>
+  <!--嵌套查询动态sql语句-->
+  <select id="nestedSelectCnyAccount" parameterType="CnyAccount" resultMap="cnyAccountNestedResultMap"><![CDATA[select Ca.id,Ca.user_id,Ca.balance,Ca.freeze,Ca.state,Ca.remark from CNY_account Ca ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and Ca.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and Ca.user_id = #{userId} ]]></if>
+      <if test="balance != null"><![CDATA[and Ca.balance = #{balance} ]]></if>
+      <if test="freeze != null"><![CDATA[and Ca.freeze = #{freeze} ]]></if>
+      <if test="state != null"><![CDATA[and Ca.state = #{state} ]]></if>
+      <if test="remark != null"><![CDATA[and Ca.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+  <!--插入动态sql语句-->
+  <insert id="insertCnyAccount" parameterType="CnyAccount" flushCache="true" useGeneratedKeys="true" keyProperty="id"><![CDATA[insert into CNY_account ]]>
+    <trim prefix="(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,id]]></if>
+      <if test="userId != null"><![CDATA[,user_id]]></if>
+      <if test="balance != null"><![CDATA[,balance]]></if>
+      <if test="freeze != null"><![CDATA[,freeze]]></if>
+      <if test="state != null"><![CDATA[,state]]></if>
+      <if test="remark != null"><![CDATA[,remark]]></if>
+    </trim>
+    <trim prefix="values(" suffix=")" prefixOverrides=",">
+      <if test="id != null"><![CDATA[,#{id}]]></if>
+      <if test="userId != null"><![CDATA[,#{userId}]]></if>
+      <if test="balance != null"><![CDATA[,#{balance}]]></if>
+      <if test="freeze != null"><![CDATA[,#{freeze}]]></if>
+      <if test="state != null"><![CDATA[,#{state}]]></if>
+      <if test="remark != null"><![CDATA[,#{remark}]]></if>
+    </trim>
+  </insert>
+  <!--更新动态sql语句-->
+  <update id="updateCnyAccount" parameterType="CnyAccount" flushCache="true"><![CDATA[update CNY_account ]]>
+    <set>
+      <if test="userId != null"><![CDATA[user_id=#{userId},]]></if>
+      <if test="balance != null"><![CDATA[balance=#{balance},]]></if>
+      <if test="freeze != null"><![CDATA[freeze=#{freeze},]]></if>
+      <if test="state != null"><![CDATA[state=#{state},]]></if>
+      <if test="remark != null"><![CDATA[remark=#{remark},]]></if>
+    </set><![CDATA[where id = #{id}]]>
+  </update>
+  <!--删除动态sql语句-->
+  <delete id="deleteCnyAccount" parameterType="CnyAccount" flushCache="true"><![CDATA[delete from CNY_account ]]>
+    <where>
+      <choose>
+        <when test="id != null"><![CDATA[and id = #{id}]]></when>
+        <otherwise>
+          <if test="userId != null"><![CDATA[and user_id = #{userId}]]></if>
+          <if test="balance != null"><![CDATA[and balance = #{balance}]]></if>
+          <if test="freeze != null"><![CDATA[and freeze = #{freeze}]]></if>
+          <if test="state != null"><![CDATA[and state = #{state}]]></if>
+          <if test="remark != null"><![CDATA[and remark = #{remark}]]></if>
+        </otherwise>
+      </choose>
+    </where>
+  </delete>
+  <!--查询数量语句-->
+  <select id="countCnyAccount" parameterType="CnyAccount" resultType="int"><![CDATA[select count(*) from CNY_account Ca ]]>
+    <trim prefix="where" prefixOverrides="and |or">
+      <if test="id != null"><![CDATA[and Ca.id = #{id} ]]></if>
+      <if test="userId != null"><![CDATA[and Ca.user_id = #{userId} ]]></if>
+      <if test="balance != null"><![CDATA[and Ca.balance = #{balance} ]]></if>
+      <if test="freeze != null"><![CDATA[and Ca.freeze = #{freeze} ]]></if>
+      <if test="state != null"><![CDATA[and Ca.state = #{state} ]]></if>
+      <if test="remark != null"><![CDATA[and Ca.remark = #{remark} ]]></if>
+    </trim>
+  </select>
+</mapper>

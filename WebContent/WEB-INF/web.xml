@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>EBTC</display-name>
+  
+	<jsp-config>
+  		<taglib>
+  			<taglib-uri>/constantsTag</taglib-uri>
+  			<taglib-location>/WEB-INF/tld/cos.tld</taglib-location>
+  		</taglib>
+	</jsp-config>
+  
+<!--   字符编码过滤器 -->
   <filter>
     <filter-name>characterEncodingFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -17,6 +26,7 @@
     <filter-name>characterEncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+<!--   通用过滤器 -->
   <filter>
     <filter-name>CommonFilter</filter-name>
     <filter-class>com.ebtc.base.filter.CommonFilter</filter-class>
@@ -25,6 +35,25 @@
     <filter-name>CommonFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+<!--   登陆过滤器 -->
+  <filter>
+    <filter-name>LoginFilter</filter-name>
+    <filter-class>com.ebtc.base.filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LoginFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+<!--   URI过滤器 -->
+  <filter>
+  	<filter-name>URIFilter</filter-name>
+  	<filter-class>com.ebtc.base.filter.URIFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>URIFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+<!--   静态文件servlet -->
   <servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>*.jpg</url-pattern>
@@ -45,26 +74,7 @@
     <servlet-name>default</servlet-name>
     <url-pattern>*.css</url-pattern>
   </servlet-mapping>
-  <servlet>
-    <servlet-name>CatptchaValidator</servlet-name>
-    <servlet-class>com.ebtc.base.servlet.CatptchaValidator</servlet-class>
-    <load-on-startup>0</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>CatptchaValidator</servlet-name>
-    <url-pattern>/CatptchaValidator</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>CaptchaServlet</servlet-name>
-    <servlet-class>com.ebtc.base.servlet.CaptchaServlet</servlet-class>
-    <load-on-startup>0</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>CaptchaServlet</servlet-name>
-    <url-pattern>/CaptchaServlet</url-pattern>
-  </servlet-mapping>
-  
+<!--   springMVC servlet -->
   <servlet>
     <servlet-name>springMVC</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -74,6 +84,33 @@
     <servlet-name>springMVC</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+<!--   初始化servlet -->
+  <servlet>
+    <servlet-name>InitServlet</servlet-name>
+    <servlet-class>com.ebtc.base.servlet.InitServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+<!--   验证码servlet -->
+  <servlet>
+    <servlet-name>CaptchaServlet</servlet-name>
+    <servlet-class>com.ebtc.base.servlet.CaptchaServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CaptchaServlet</servlet-name>
+    <url-pattern>/CaptchaServlet</url-pattern>
+  </servlet-mapping>
+<!--   验证码校验servlet -->
+  <servlet>
+    <servlet-name>CatptchaValidator</servlet-name>
+    <servlet-class>com.ebtc.base.servlet.CatptchaValidator</servlet-class>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CatptchaValidator</servlet-name>
+    <url-pattern>/CatptchaValidator</url-pattern>
+  </servlet-mapping>
+<!--   spring容器 -->
   <listener>
     <display-name>contextLoaderListener</display-name>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -86,6 +123,7 @@
     <param-name>webAppRootKey</param-name>
     <param-value>webName.root</param-value>
   </context-param>
+<!--   错误页面 -->
   <error-page>
     <error-code>404</error-code>
     <location>/404.html</location>
@@ -102,7 +140,8 @@
     <exception-type>java.lang.NullPointerException</exception-type>
     <location>/error.html</location>
   </error-page>
+  
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>/index.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

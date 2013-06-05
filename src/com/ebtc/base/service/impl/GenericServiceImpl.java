@@ -53,7 +53,7 @@ public abstract class GenericServiceImpl<POJO extends Pojo,GENERICDAO extends Ge
 		PaginationInfo pageInfo = new PaginationInfo();
 		pageInfo.setPageSize(1);
 		pageInfo.setCurrentPage(1);
-		List<POJO> list = query(pojo,pageInfo).getData();
+		List<POJO> list = query(pojo);
 		if(list != null && list.size() > 0){
 			result = list.get(0);
 		}
