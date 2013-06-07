@@ -1,5 +1,6 @@
 package com.ebtc.user.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.ebtc.base.pojo.Pojo;
@@ -12,7 +13,11 @@ import com.ebtc.base.pojo.Pojo;
  *
  */
 
-public class User extends Pojo{
+public class User extends Pojo implements Serializable{
+	/** 
+	 * @Fields serialVersionUID : TODO(用一句话描述这个变量表示什么) 
+	 */ 
+	private static final long serialVersionUID = -6659911084003855575L;
 	/**
 	*	主键
 	*/

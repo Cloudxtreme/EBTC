@@ -15,10 +15,13 @@
 	<meta http-equiv="pragma" content="no-cache">
 	<!-- JQUERY -->	
 	<script type="text/javascript" src="${ctx}/js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="${ctx}/js/jquery.cookie.js"></script>
+	<!-- JQUERY Cookie -->
 	<!-- JSON -->
 	<script type="text/javascript" src="${ctx}/js/json/json2.min.js"></script>
 	<!-- WS_OPERATIONS_COMMUNICATIONS -->
 	<script type="text/javascript" src="${ctx}/js/ebtc/operations_communications.js"></script>
+	<!-- UUID -->
 	<script type="text/javascript" src="${ctx}/js/uuid.js"></script>
 	<script type="text/javascript">
 		//调整宽和高
@@ -28,16 +31,15 @@
 		}
 		
 		//跳转到
-		function go(uri){
+		function go_to(uri){
+			console.info(uri);
 			var $pageForm = $('#pageForm');
 			$pageForm.attr('action',uri);
 			
 			var uuid = getSESSIONUUID();
-			if(uuid != undefined && uuid != null && uuid != ""){
-				var $uuid = $('<input type="hidden" name="uuid"/>');
-				$uuid.val(uuid);
-				$pageForm.append($uuid);			
-			}
+			var $uuid = $('<input type="hidden" name="uuid"/>');
+			$uuid.val(uuid);
+			$pageForm.append($uuid);			
 			
 			$pageForm.submit();
 		}
@@ -49,7 +51,7 @@
 				pageFrameWindow.updateCurrentRate();
 			});
 			serviceRequest(["currentRate","transactionRecord"]);
-			go("${ctx}/index");
+			go_to("${ctx}/index");
 		});
 		
 		function update(){

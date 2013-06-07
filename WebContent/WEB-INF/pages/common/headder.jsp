@@ -83,7 +83,17 @@
 			var username = $("input[name='username']")[0].value;
 			var password = $("input[name='password']")[0].value;
 			
+			var reg = new RegExp("^\\s*$");
+			if(reg.test(username) || reg.test(password)){
+				return;
+			}
+			
 			parent.login(username,password);
+		}
+		
+		function loginFail(message){
+			$("input[name='password']")[0].value = "";
+			openMessageBox(message);
 		}
 		
 		function closeBox(tar) {
@@ -158,12 +168,12 @@
 								<li>
 							</c:otherwise>
 						</c:choose>
-							<a onclick="parent.go('${ctx }${menu.uri }')"><fmt:message key="${menu.name }" /></a>
+							<a onclick="parent.go_to('${ctx }${menu.uri }')"><fmt:message key="${menu.name }" /></a>
 							<c:if test="${not empty menu.subMenus }">
 								<ul>
 									<c:forEach items="${ctx }${menu.subMenus }" var="subMenu">
 										<li>
-											<a onclick="parent.go('${ctx }${subMenu.uri }')"><fmt:message key="${subMenu.name }" /></a>
+											<a onclick="parent.go_to('${ctx }${subMenu.uri }')"><fmt:message key="${subMenu.name }" /></a>
 										</li>
 									</c:forEach>
 								</ul>

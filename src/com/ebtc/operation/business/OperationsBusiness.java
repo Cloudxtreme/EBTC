@@ -78,9 +78,9 @@ public class OperationsBusiness {
 	 * @param message 
 	 */
 	public void doAction(WebSocket conn, JSONObject message) {
-		JSONObject action = message.getJSONObject("action");
+		JSONObject action = getJSONObject(message,"action");
 		if(action != null){
-			String command = action.getString("command");
+			String command = getString(action,"command");
 			if(command != null){
 				if(command.equals("setLocale")){
 					//设置客户语言
@@ -89,7 +89,7 @@ public class OperationsBusiness {
 					//命令是服务service
 					doService(conn,action);
 				}else if(command.equals("login")){
-					JSONObject data = message.getJSONObject("data");
+					JSONObject data = getJSONObject(message,"data");
 					doLogin(conn,data);
 				}
 			}
@@ -99,21 +99,52 @@ public class OperationsBusiness {
 	private void setLocale(WebSocket conn, JSONObject message) {
 		JSONObject action = message.getJSONObject("action");
 		if(action != null){
-			JSONArray params = action.getJSONArray("params");
+			JSONArray params = getJSONArray(action,"params");
 			if(params.size()>0){
 				String locale = params.getString(0);
-				JSONObject data = message.getJSONObject("data");
+				JSONObject data = getJSONObject(message,"data");
 				if(data != null){
-					String uuid = data.getString("uuid");
-					if(localCached.add(conn, uuid)){
-						localCached.add(uuid+"locale", locale);
+					String uuid = getString(data,"uuid");
+					if(uuid != null){
+						if(localCached.add(conn, uuid)){
+							localCached.add(uuid+"locale", locale);
+						}
 					}
 				}
 			}
 		}
 	}
 
+	private JSONObject getJSONObject(JSONObject tar,String key){
+		if(tar.has(key)){
+			Object obj = tar.get(key);
+			if(obj.getClass().equals(JSONObject.class)){
+				return (JSONObject) obj;
+			}
+		}
+		return null;
+	}
 
+	private JSONArray getJSONArray(JSONObject tar,String key){
+		if(tar.has(key)){
+			Object obj = tar.get(key);
+			if(obj.getClass().equals(JSONArray.class)){
+				return (JSONArray) obj;
+			}
+		}
+		return null;
+	}
+	
+	private String getString(JSONObject tar,String key){
+		if(tar.has(key)){
+			Object obj = tar.get(key);
+			if(obj.getClass().equals(String.class)){
+				return (String) obj;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @Title	doService 
@@ -122,7 +153,7 @@ public class OperationsBusiness {
 	 * @param action
 	 */
 	public void doService(WebSocket conn, JSONObject action) {
-		JSONArray param = action.getJSONArray("params");
+		JSONArray param = getJSONArray(action,"params");
 		if(param != null && !param.isEmpty()){
 			Iterator it = param.iterator();
 			while(it.hasNext()){
@@ -177,53 +208,54 @@ public class OperationsBusiness {
 	 */
 	public void doLogin(WebSocket conn, JSONObject data) {
 		User user = new User();
-		String username = data.getString("username");
-		String password = data.getString("password");
-		String uuid = data.getString("uuid");
-		user.setUsername(username);
-		user.setPassword(password);
-		try {
-			user = userService.login(user);
-			Message message = new Message();
-			Action action = new Action();
-			HashMap map = new HashMap(1);
-			if(user != null){
-				//登录成功
-				//保存用户到memcached和localCached
-				String key = uuid+"loginUser";
-				memcached.set(key, user);
-				localCached.set(key, user);
-				
-				//返回登录成功
-				action.setCommand("loginSuccess");
+		String username = getString(data,"username");
+		String password = getString(data,"password");
+		String uuid = getString(data,"uuid");
+		if(uuid != null && username != null && password != null){
+			user.setUsername(username);
+			user.setPassword(password);
+			try {
+				user = userService.login(user);
+				Message message = new Message();
+				Action action = new Action();
+				HashMap map = new HashMap(1);
 				message.setAction(action);
 				message.setData(map);
-			}else{
-				//用户名或密码错误
-				action.setCommand("loginFail");
-				String errorMessage = null;
-				String locale = (String) localCached.get(uuid+"locale");
-				if(locale.equals("zh_cn")){
-					errorMessage = "登录失败,用户名或密码错误!";
-				}else if(locale.equals("en_us")){
-					errorMessage = "login fail,username or password is wrong!";
-				}else if(locale.equals("zh_tw")){
-					errorMessage = "登錄失敗,用戶名或密碼錯誤!";
+				if(user != null){
+					//登录成功
+					//保存用户到memcached和localCached
+					String key = uuid+"loginUser";
+					memcached.set(key, user);
+					localCached.set(key, user);
+					
+					//返回登录成功
+					action.setCommand("loginSuccess");
+				}else{
+					//用户名或密码错误
+					action.setCommand("loginFail");
+					String errorMessage = null;
+					String locale = (String) localCached.get(uuid+"locale");
+					if(locale.equals("zh-cn")){
+						errorMessage = "登录失败,用户名或密码错误!";
+					}else if(locale.equals("en-us")){
+						errorMessage = "login fail,username or password is wrong!";
+					}else if(locale.equals("zh-tw")){
+						errorMessage = "登錄失敗,用戶名或密碼錯誤!";
+					}
+					
+					map.put("errorMessage", errorMessage);
 				}
+				synchronized ( conn ) {
+					try {
+						conn.send(JSONObject.fromObject(message).toString());
+					} catch (InterruptedException e) {
+						log.debug(e);
+					}
+				};
 				
-				map.put("errorMessage", errorMessage);
-				message.setData(map);
+			} catch (BusinessException e) {
+				log.debug(e);
 			}
-			synchronized ( conn ) {
-				try {
-					conn.send(JSONObject.fromObject(message).toString());
-				} catch (InterruptedException e) {
-					log.debug(e);
-				}
-			};
-			
-		} catch (BusinessException e) {
-			log.debug(e);
 		}
 	}
 	

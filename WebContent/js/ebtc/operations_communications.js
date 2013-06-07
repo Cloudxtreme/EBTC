@@ -19,12 +19,12 @@
 
 	//登录成功
 	function loginSuccess(action,data){
-		var uuid = getSESSIONUUID();
-		
+		go_to("/EBTC/myAcc");
 	}
 
 	function loginFail(action,data){
-		var message = "登录失败,用户名或密码错误!";
+		var message = data.errorMessage;
+		pageFrame.window.loginFail(message);
 	}
 
 	//处理action
@@ -102,10 +102,13 @@
 	}
 	
 	function getSESSIONUUID(){
+		var uuid = $.cookie("SESSIONUUID");
 		if(uuid == undefined || uuid == null || uuid == ""){
 			uuid = new UUID().toString();
-			$.cookie('SESSIONUUID', uuid, {expires: 7, path: '/', secure: true});
+//			$.cookie('SESSIONUUID', uuid, {expires: 7*3600*24*1000, path: '',domain:'localhost', secure: true});
+			$.cookie('SESSIONUUID',uuid);
 		}
+		return uuid;
 	}
 	
 	var ws;
@@ -118,7 +121,6 @@
 			params[0] = tem;
 		}
 		var uuid = getSESSIONUUID();
-		
 		if (!window.WebSocket) {
 			alert("FATAL: WebSocket not natively supported. This demo will not work!");
 		}else{
