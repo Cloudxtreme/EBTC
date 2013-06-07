@@ -29,9 +29,17 @@
 		
 		//跳转到
 		function go(uri){
-			var pageForm = $('#pageForm');
-			pageForm.attr('action',uri);
-			pageForm.submit();
+			var $pageForm = $('#pageForm');
+			$pageForm.attr('action',uri);
+			
+			var uuid = getSESSIONUUID();
+			if(uuid != undefined && uuid != null && uuid != ""){
+				var $uuid = $('<input type="hidden" name="uuid"/>');
+				$uuid.val(uuid);
+				$pageForm.append($uuid);			
+			}
+			
+			$pageForm.submit();
 		}
 		
 		$(function(){
@@ -69,7 +77,8 @@
 		<div style="display:none;" id="datas">
 			<div id="currentRateData"></div>
 		</div>
-		<form style="display:none;" id="pageForm" method="post" target="pageFrame"></form>
+		<form style="display:none;" id="pageForm" method="post" target="pageFrame">
+		</form>
 		<iframe id="pageFrame" name="pageFrame">
 		</iframe>
 	</body>

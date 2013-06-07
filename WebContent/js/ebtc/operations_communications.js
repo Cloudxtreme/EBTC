@@ -2,25 +2,30 @@
 
 	//登陆方法
 	function login(username,password){
-		
-		var uuid = new UUID().toString();
-		
+		var uuid = getSESSIONUUID();
 		var message = {
 				action:{
 					command:"login",
 					params:null
 				},
 				data:{
-					username : username,
-					password : password,
-					uuid : uuid
+					username : username
+					,password : password
+					,uuid : uuid
 				}
 		}
-		
 		ws.send(JSON.stringify(message));
 	}
 
+	//登录成功
+	function loginSuccess(action,data){
+		var uuid = getSESSIONUUID();
+		
+	}
 
+	function loginFail(action,data){
+		var message = "登录失败,用户名或密码错误!";
+	}
 
 	//处理action
 	function doAction(message){
@@ -33,11 +38,16 @@
 					if(command == "refresh"){
 						var params = action.params;
 						refresh(params,message.data);
+					}else if(command == "loginSuccess"){
+						loginSuccess(action,message.data);
+					}else if(command == "loginFail"){
+						loginFail(action,message.data);
 					}
 				}
 			}
 		}
 	}
+	
 	//刷新
 	function refresh(params,data){
 		if(params != undefined && params[0] != null){
@@ -91,6 +101,13 @@
 		}
 	}
 	
+	function getSESSIONUUID(){
+		if(uuid == undefined || uuid == null || uuid == ""){
+			uuid = new UUID().toString();
+			$.cookie('SESSIONUUID', uuid, {expires: 7, path: '/', secure: true});
+		}
+	}
+	
 	var ws;
 	//服务请求
 	function serviceRequest(params){
@@ -100,6 +117,7 @@
 			params = new Array();
 			params[0] = tem;
 		}
+		var uuid = getSESSIONUUID();
 		
 		if (!window.WebSocket) {
 			alert("FATAL: WebSocket not natively supported. This demo will not work!");
@@ -107,15 +125,30 @@
 			ws = new WebSocket("ws://127.0.0.1:22222");
 			ws.onopen = function() {
 				console.info("[WebSocket#onopen]");
+				
+				var locale = new Array();
+				locale[0] = (navigator.language  ||  navigator.userLanguage).toString().toLowerCase();
+				
+				var setLocale = {
+						action:{
+							command:"setLocale"
+							,params:locale
+						}
+						,data:{
+							uuid:uuid
+						}
+				};
+				ws.send(JSON.stringify(setLocale));
+				
 				var message = {
 						action:{
 							command:"service",
 							params:params
 						}
-					,data:{
-						
-					}
-				};
+						,data:{
+							uuid:uuid
+						}
+					};
 				ws.send(JSON.stringify(message));
 			};
 			

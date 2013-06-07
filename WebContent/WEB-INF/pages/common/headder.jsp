@@ -57,19 +57,23 @@
 			parent.autoWH(document.body.scrollWidth,document.body.scrollHeight);
 		});
 		
-		function go_to(uri){
-			
-		}
-		
+		//弹出登录框
 		function openLoginBox(){
 			$("#login_div").OpenDiv(); 
 		}
 	
-		function openRegister() { 
+		//弹出注册框
+		function openRegisterBox() { 
 			$("#register_div").OpenDiv(); 
 			var url = "${ctx}/user/toRegist";
 			$('#openRegist_form').attr('target','regist_iframe').attr('action',url).submit();
 		} 
+		
+		//弹出模态消息框
+		function openMessageBox(message){
+			$('#message_content').text(message);
+			$("#message_div").OpenDiv(); 
+		}
 		
 		function login(){
 // 			var loginForm = $('#login_form');
@@ -82,7 +86,7 @@
 			parent.login(username,password);
 		}
 		
-		function closeRegister(tar) {
+		function closeBox(tar) {
 			$(tar).parent('.model_div').CloseDiv();
 		} 
 		
@@ -95,17 +99,18 @@
 <body>
 <!-- 注册页面用的模态层 -->
 	<div id="register_div" class="model_div register_div corners">
-		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
+		<div class="close_btn" onclick="closeBox(this)">关闭</div>
 		<form target="regist_iframe" id="openRegist_form" action=""></form>
 		<iframe style="width:100%;height:535px;" id="regist_iframe" name="regist_iframe"></iframe>
 	</div> 
 <!-- 	登陆窗口用的模态层 -->
 	<div id="login_div" class="model_div login_div corners">
-		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
+		<div class="close_btn" onclick="closeBox(this)">关闭</div>
 	</div>
 <!-- 	弹出消息用模态层 -->
 	<div id="message_div" class="model_div message_div corners">
-		<div class="close_btn" onclick="closeRegister(this)">关闭</div>
+		<div class="close_btn" onclick="closeBox(this)">关闭</div>
+		<div id="message_content"></div>
 	</div>
 	<!-- Header -->
 	<header id="top">
@@ -129,7 +134,7 @@
 							<span>|</span>
 							<a href="#"><fmt:message key="forgotUsername"/></a></br>
 							<a style="padding:4px;margin:5px" class="btn btn-blue" onclick="login()"><fmt:message key="login"/></a>
-							<a style="padding:4px;margin:5px" class="btn btn-green" onclick="openRegister()"><fmt:message key="signUp"/></a>
+							<a style="padding:4px;margin:5px" class="btn btn-green" onclick="openRegisterBox()"><fmt:message key="signUp"/></a>
 						</c:when>
 						<c:otherwise>
 							欢迎回来! <b id="login_user">${sessionScope.login_user.nickname }</b>
